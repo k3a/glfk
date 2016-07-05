@@ -55,6 +55,11 @@ public:
 	std::string GetInfoLog()const;
 	bool IsValid()const{return _valid;};
 	Program& Use();
+	GLint GetIntVar(GLenum pname)const;
+
+	// utils
+	unsigned GetNumActiveAttributes()const{ return GetIntVar(GL_ACTIVE_ATTRIBUTES); };
+	unsigned GetNumActiveUniforms()const{ return GetIntVar(GL_ACTIVE_UNIFORMS); };
 
 private:
 	GLuint _program;

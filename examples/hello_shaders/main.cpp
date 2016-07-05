@@ -57,6 +57,9 @@ int main()
 	if (!prg.Link()) {
 		std::string log = prg.GetInfoLog();
 		printf("Prog Link Error: %s\n", log.c_str());
+	} else {
+		printf("Prog Compiled OK: %u attrs, %u uniforms\n", 
+				prg.GetNumActiveAttributes(), prg.GetNumActiveUniforms());
 	}
 
 	VertexArray va;
