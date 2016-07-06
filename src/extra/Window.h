@@ -6,6 +6,7 @@ The GNU General Public License v3.0
 class Window
 {
     typedef void(*FramebufferSizeCallback) (unsigned width, unsigned height);
+    typedef void(*KeyCallback)(int key, int scancode, int action, int mods);
 
 public:
     Window();
@@ -17,6 +18,7 @@ public:
     bool ShouldClose();
 
     FramebufferSizeCallback SetFramebufferSizeCallback(FramebufferSizeCallback cb);
+    Window::KeyCallback SetKeyCallback(KeyCallback cb);
 
 private:
     struct sPrivate;

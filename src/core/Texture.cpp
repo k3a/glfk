@@ -1,3 +1,7 @@
+/*-
+Minimalistic and Modular OpenGL C++ Framework
+The GNU General Public License v3.0
+-*/
 #include "Texture.h"
 
 BaseTexture::BaseTexture()
@@ -47,6 +51,38 @@ BaseTexture& BaseTexture::GenerateMipmap(GLenum target)
     GLFK_AUTO_UNBIND(target);
     return *this;
 }
+
+GLint BaseTexture::GetInt(GLenum target, GLenum pname)
+{
+    GLint out;
+    glGetTexParameteriv(target, pname, &out);
+    PrintGLError("getting int v texture param");
+    return out;
+}
+
+BaseTexture& BaseTexture::SetInt(GLenum target, GLenum pname, GLint value)
+{
+    glTexParameteri(target, pname, value);
+    PrintGLError("setting int texture param");
+    return *this;
+}
+
+BaseTexture& BaseTexture::SetWrap(GLenum target, WrapMode s)
+{
+    return SetInt(target, GL_TEXTURE_WRAP_S, s);
+}
+BaseTexture& BaseTexture::SetWrap(GLenum target, WrapMode s, WrapMode t)
+{
+    return SetInt(target, GL_TEXTURE_WRAP_S, s);
+    return SetInt(target, GL_TEXTURE_WRAP_T, t);
+}
+BaseTexture& BaseTexture::SetWrap(GLenum target, WrapMode s, WrapMode t, WrapMode r)
+{
+    return SetInt(target, GL_TEXTURE_WRAP_S, s);
+    return SetInt(target, GL_TEXTURE_WRAP_T, t);
+    return SetInt(target, GL_TEXTURE_WRAP_R, r);
+}
+
 //-----------------------------------------------
 Texture& Texture::Bind()
 {
@@ -72,7 +108,7 @@ Texture1D& Texture1D::SetImage(GLint level, GLint internalFormat, GLsizei width,
 //-----------------------------------------------
 
 Texture2D& Texture2D::SetImage(GLint level, GLint internalFormat, GLsizei width, GLsizei height,
-                               GLenum format, GLenum type, const GLvoid * data)
+                                GLenum format, GLenum type, const GLvoid * data)
 {
     GLFK_AUTO_BIND();
     glTexImage2D(_target, level, internalFormat, width, height, 0, format, type, data);
@@ -96,7 +132,7 @@ Texture3D& Texture3D::SetImage(GLint level, GLint internalFormat, GLsizei width,
 //-----------------------------------------------
 
 TextureCubeMap& TextureCubeMap::SetImage(CubeFace face, GLint level, GLint internalFormat, GLsizei width, GLsizei height,
-                                         GLenum format, GLenum type, const GLvoid * data)
+                                        GLenum format, GLenum type, const GLvoid * data)
 {
     GLFK_AUTO_BIND();
     glTexImage2D(face, level, internalFormat, width, height, 0, format, type, data);

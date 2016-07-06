@@ -46,12 +46,18 @@ static void resize_cb(unsigned w, unsigned h)
     std::cout << "FB Resize: " << w << "x" << h << std::endl;
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 }
+static void key_cb(int key, int scancode, int action, int mods)
+{
+    if (key == 256) // GLFW_KEY_ESCAPE
+        exit(0);
+}
 
 int main()
 {
     Window win;
     win.Create(640, 480, "GLFK");
     win.SetFramebufferSizeCallback(resize_cb);
+    win.SetKeyCallback(key_cb);
 
     BaseShader* vs = VertexShader::FromString(vsSrc);
     if (!vs->Compile()) {

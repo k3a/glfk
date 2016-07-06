@@ -1,7 +1,7 @@
 /*-
- Minimalistic and Modular OpenGL C++ Framework
- The GNU General Public License v3.0
- -*/
+Minimalistic and Modular OpenGL C++ Framework
+The GNU General Public License v3.0
+-*/
 #pragma once
 
 #include "Renderer.h"
@@ -11,6 +11,11 @@
 class BaseTexture : public NoCopy
 {
 public:
+    enum WrapMode {
+        CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE,
+        MIRRORED_REPEAT = GL_MIRRORED_REPEAT,
+        REPEAT = GL_REPEAT
+    };
     
     BaseTexture();
     ~BaseTexture();
@@ -18,6 +23,8 @@ public:
     BaseTexture& Bind(GLenum target);
     static void BindNone(GLenum target);
     BaseTexture& Unbind(GLenum target){ BindNone(target); return *this; };
+    GLint GetInt(GLenum target, GLenum pname);
+    BaseTexture& SetInt(GLenum target, GLenum pname, GLint value);
     
     /// Sets as active texture for a specified unit (starting from 0 which specifies GL_TEXTURE0).
     /// You can also specify GL constant here like GL_TEXTURE0
@@ -25,6 +32,11 @@ public:
     unsigned GetUnit(){ return _unit; };
     
     BaseTexture& GenerateMipmap(GLenum target);
+    
+    // helpers
+    BaseTexture& SetWrap(GLenum target, WrapMode s);
+    BaseTexture& SetWrap(GLenum target, WrapMode s, WrapMode t);
+    BaseTexture& SetWrap(GLenum target, WrapMode s, WrapMode t, WrapMode r);
     
 private:
     GLuint _texture;
@@ -37,14 +49,21 @@ class Texture : public BaseTexture
 public:
     Texture(GLenum target) : _target(target) {};
     
+    Texture& Bind();
+    Texture& Unbind();
+    GLint GetInt(GLenum pname){ return BaseTexture::GetInt(_target, pname); };
+    BaseTexture& SetInt(GLenum pname, GLint value){ return (Texture&)BaseTexture::SetInt(_target, pname, value); };
+    
     /// Sets as active texture for a specified unit (starting from 0 which specifies GL_TEXTURE0).
     /// You can also specify GL constant here like GL_TEXTURE0
     BaseTexture& SetToUnit(unsigned unit){ return (Texture&)BaseTexture::SetToUnit(_target, unit); };
     
     Texture& GenerateMipmap(){ return (Texture&)BaseTexture::GenerateMipmap(_target); };
     
-    Texture& Bind();
-    Texture& Unbind();
+    // helpers
+    BaseTexture& SetWrap(GLenum target, WrapMode s){ return (Texture&)BaseTexture::SetWrap(_target, s); };
+    BaseTexture& SetWrap(GLenum target, WrapMode s, WrapMode t){ return (Texture&)BaseTexture::SetWrap(_target, s, t); };
+    BaseTexture& SetWrap(GLenum target, WrapMode s, WrapMode t, WrapMode r){ return (Texture&)BaseTexture::SetWrap(_target, s, t, r); };
     
 protected:
     GLenum _target;
@@ -89,7 +108,7 @@ public:
     /// \param format Format of supplied data
     /// \param type Data type of each channel
     Texture3D& SetImage(GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth,
-                       GLenum format, GLenum type, const GLvoid * data);
+                        GLenum format, GLenum type, const GLvoid * data);
 };
 
 /// Texture for GL_TEXTURE_CUBE_MAP
@@ -112,7 +131,7 @@ public:
     /// \param format Format of supplied data
     /// \param type Data type of each channel
     TextureCubeMap& SetImage(CubeFace face, GLint level, GLint internalFormat, GLsizei width, GLsizei height,
-                             GLenum format, GLenum type, const GLvoid * data);
+                            GLenum format, GLenum type, const GLvoid * data);
 };
 
 

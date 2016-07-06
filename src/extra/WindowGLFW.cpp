@@ -20,7 +20,8 @@ static void glfw_error_cb(int err, const char * desc)
 struct Window::sPrivate {
     sPrivate() 
     :	window(NULL),
-        framebufferSizeCallback(NULL)
+        framebufferSizeCallback(NULL),
+        keyCallback(NULL)
         {};
 
     GLFWwindow* window;
@@ -30,6 +31,13 @@ struct Window::sPrivate {
     {
         sPrivate* p = (sPrivate*)glfwGetWindowUserPointer(w);
         if (p->framebufferSizeCallback) p->framebufferSizeCallback(width, height);
+    }
+    
+    Window::KeyCallback keyCallback;
+    static void _KeyCallback(GLFWwindow* w, int key,int scancode, int action, int mods)
+    {
+        sPrivate* p = (sPrivate*)glfwGetWindowUserPointer(w);
+        if (p->keyCallback) p->keyCallback(key, scancode, action, mods);
     }
 };
 
@@ -110,6 +118,14 @@ Window::FramebufferSizeCallback Window::SetFramebufferSizeCallback(FramebufferSi
         cb(width, height);
     }
 
+    return prev;
+}
+
+Window::KeyCallback Window::SetKeyCallback(KeyCallback cb)
+{
+    KeyCallback prev = _private->keyCallback;
+    _private->keyCallback = cb;
+    glfwSetKeyCallback(_private->window, _private->_KeyCallback);
     return prev;
 }
 
