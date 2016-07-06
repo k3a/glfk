@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "Utils.h"
 
+/// Class encapsulating Vertex Buffer Object (VBO)
 class BaseBuffer : public NoCopy
 {
 public:
@@ -18,6 +19,7 @@ private:
 	GLuint _buffer;
 };
 
+/// Class encapsulating Vertex Buffer Object (VBO) for a single target
 class Buffer : public BaseBuffer
 {
 public:
@@ -30,6 +32,7 @@ private:
 	GLenum _target;	
 };
 
+/// Class encapsulating Vertex Buffer Object (VBO) for GL_ARRAY_BUFFER
 class ArrayBuffer : public Buffer
 {
 public:
@@ -38,13 +41,16 @@ public:
 	ArrayBuffer& SetAttribPointer(GLuint index, GLint size, GLenum type, 
 			GLboolean normalized = GL_FALSE, GLsizei stride = 0, const GLvoid * pointer = NULL);
 };
+/// Alias for ArrayBuffer
 typedef ArrayBuffer VertexBuffer;
 
+/// Class encapsulating Vertex Buffer Object (VBO) for GL_ARRAY_BUFFER
 class ElementArrayBuffer : public Buffer
 {
 public:
     ElementArrayBuffer() : Buffer(GL_ELEMENT_ARRAY_BUFFER) {};
 };
+/// Alias for ElementArrayBuffer
 typedef ElementArrayBuffer IndexBuffer;
 
 

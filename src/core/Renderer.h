@@ -14,6 +14,7 @@
 # include <GL/gl.h>
 #endif
 
+/// Class encapsulating static functions to general OpenGL commands not bound to any object
 class Renderer
 {
 	public:
@@ -22,9 +23,12 @@ class Renderer
 		static void DrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid * indices = NULL);
 		static void DrawArrays(GLenum mode, GLint first, GLsizei count);
 };
+/// Shortcut to Renderer
 typedef Renderer R;
 
-// useful macros
+// useful macros -------------------------------------------------
+
+/// Automatically bind the object
 #define GLFK_AUTO_BIND(...) Bind(__VA_ARGS__)
 #ifdef GLFK_ENSURE_UNBIND
 # define GLFK_AUTO_UNBIND(...) Unbind(__VA_ARGS__)

@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "Utils.h"
 
+/// Vertex Array Object (VAO)
 class VertexArray : public NoCopy
 {
 public:

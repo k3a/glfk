@@ -4,6 +4,7 @@
 #include "Utils.h"
 #include <string>
 
+/// Class encapsulating Shader Object
 class BaseShader : public NoCopy
 {
 	friend class Program;
@@ -22,6 +23,7 @@ private:
 	bool _valid;
 };
 
+/// Program object of type GL_VERTEX_SHADER
 class VertexShader : public BaseShader
 {
 public:
@@ -33,6 +35,7 @@ public:
 	};
 };
 
+/// Program object of type GL_FRAGMENT_SHADER
 class FragmentShader : public BaseShader
 {
 public:
@@ -44,6 +47,7 @@ public:
 	};
 };
 
+/// Program Object
 class Program : public NoCopy
 {
 public:
