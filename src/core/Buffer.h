@@ -1,3 +1,7 @@
+/*-
+Minimalistic and Modular OpenGL C++ Framework
+The GNU General Public License v3.0
+-*/
 #pragma once
 
 #include "Renderer.h"
@@ -7,39 +11,39 @@
 class BaseBuffer : public NoCopy
 {
 public:
-	BaseBuffer();
-	~BaseBuffer();
+    BaseBuffer();
+    ~BaseBuffer();
 
-	BaseBuffer& Bind(GLenum target);
-	static void BindNone(GLenum target);
-	BaseBuffer& Unbind(GLenum target){ BindNone(target); return *this; };
-	BaseBuffer& SetData(GLenum target, GLsizeiptr size, const GLvoid * data, GLenum usage = GL_STATIC_DRAW);
+    BaseBuffer& Bind(GLenum target);
+    static void BindNone(GLenum target);
+    BaseBuffer& Unbind(GLenum target){ BindNone(target); return *this; };
+    BaseBuffer& SetData(GLenum target, GLsizeiptr size, const GLvoid * data, GLenum usage = GL_STATIC_DRAW);
 
 private:
-	GLuint _buffer;
+    GLuint _buffer;
 };
 
 /// Class encapsulating Vertex Buffer Object (VBO) for a single target
 class Buffer : public BaseBuffer
 {
 public:
-	Buffer(GLenum target);
-	Buffer& Bind();
-	Buffer& Unbind();
-	Buffer& SetData(GLsizeiptr size, const GLvoid * data, GLenum usage = GL_STATIC_DRAW);
+    Buffer(GLenum target);
+    Buffer& Bind();
+    Buffer& Unbind();
+    Buffer& SetData(GLsizeiptr size, const GLvoid * data, GLenum usage = GL_STATIC_DRAW);
 
 private:
-	GLenum _target;	
+    GLenum _target;	
 };
 
 /// Class encapsulating Vertex Buffer Object (VBO) for GL_ARRAY_BUFFER
 class ArrayBuffer : public Buffer
 {
 public:
-	ArrayBuffer() : Buffer(GL_ARRAY_BUFFER) {};
+    ArrayBuffer() : Buffer(GL_ARRAY_BUFFER) {};
 
-	ArrayBuffer& SetAttribPointer(GLuint index, GLint size, GLenum type, 
-			GLboolean normalized = GL_FALSE, GLsizei stride = 0, const GLvoid * pointer = NULL);
+    ArrayBuffer& SetAttribPointer(GLuint index, GLint size, GLenum type, 
+            GLboolean normalized = GL_FALSE, GLsizei stride = 0, const GLvoid * pointer = NULL);
 };
 /// Alias for ArrayBuffer
 typedef ArrayBuffer VertexBuffer;

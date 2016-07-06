@@ -1,3 +1,7 @@
+/*-
+Minimalistic and Modular OpenGL C++ Framework
+The GNU General Public License v3.0
+-*/
 #pragma once
 
 #include "Renderer.h"
@@ -7,15 +11,15 @@
 class VertexArray : public NoCopy
 {
 public:
-	VertexArray();
-	~VertexArray();
+    VertexArray();
+    ~VertexArray();
 
-	VertexArray& Bind();
-	static void BindNone();
-	VertexArray& Unbind(){ BindNone(); return *this; };
+    VertexArray& Bind();
+    static void BindNone();
+    VertexArray& Unbind(){ BindNone(); return *this; };
 
-	VertexArray& EnableAttribArray(GLuint index, bool enable=true);
+    VertexArray& EnableAttribArray(GLuint index, bool enable=true);
 
 private:
-	GLuint _array;
+    GLuint _array;
 };

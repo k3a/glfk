@@ -1,3 +1,7 @@
+/*-
+Minimalistic and Modular OpenGL C++ Framework
+The GNU General Public License v3.0
+-*/
 #pragma once
 
 #include <string>
@@ -17,8 +21,8 @@ void PrintGLError(const char* where);
 class NoCopy
 {
 protected:
-	NoCopy(){};
+    NoCopy(){};
 
 private:
-	NoCopy(const NoCopy& other);
+    NoCopy(const NoCopy& other);
 };

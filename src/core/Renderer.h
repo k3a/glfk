@@ -1,3 +1,7 @@
+/*-
+Minimalistic and Modular OpenGL C++ Framework
+The GNU General Public License v3.0
+-*/
 #pragma once
 
 // include opengl headers
@@ -17,11 +21,11 @@
 /// Class encapsulating static functions to general OpenGL commands not bound to any object
 class Renderer
 {
-	public:
-		static void Clear(GLbitfield mask = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-		static void ClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
-		static void DrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid * indices = NULL);
-		static void DrawArrays(GLenum mode, GLint first, GLsizei count);
+    public:
+        static void Clear(GLbitfield mask = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        static void ClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
+        static void DrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid * indices = NULL);
+        static void DrawArrays(GLenum mode, GLint first, GLsizei count);
 };
 /// Shortcut to Renderer
 typedef Renderer R;
