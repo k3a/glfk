@@ -1,4 +1,4 @@
-GLFK - Minimalistic and Moduler OpenGL C++ Framework
+GLFK - Minimalistic and Modular OpenGL C++ Framework
 ====================================================
 
 ## Structure ##
@@ -7,6 +7,7 @@ Divided into Core and Extra.
 ### Main Core Goals ###
 
 - One opengl object = one class
+- Only Utils.cpp and .h and Renderer.cpp and Renderer.h are requred so you can use what you need only.
 - Methods resembling original OpenGL function names
 - Automatic binding, optional unbinding on bindable objects
 
