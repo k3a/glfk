@@ -5,6 +5,10 @@ The GNU General Public License v3.0
 #include "Shaders.h"
 #include <stdlib.h>
 
+#ifdef GLFK_HAS_GLM
+# include <glm/gtc/type_ptr.hpp>
+#endif
+
 BaseShader::BaseShader(GLenum shaderType) 
 : _valid(false)
 {
@@ -125,3 +129,123 @@ GLint Program::GetInt(GLenum pname)const
     return ret;
 }
 
+Attribute Program::GetAttribute(const std::string& name)
+{
+    Attribute out = glGetAttribLocation( _program, name.c_str() );
+    PrintGLError("getting attribute location");
+    return out;
+}
+
+Uniform Program::GetUniform(const std::string& name)
+{
+    Uniform out = glGetUniformLocation(_program, name.c_str());
+    PrintGLError("getting uniform location");
+    return out;
+}
+
+void Program::SetUniformInt(const Uniform& uniform, int value)
+{
+    glUniform1i(uniform, value);
+    PrintGLError("setting int uniform");
+}
+
+void Program::SetUniformInt(const Uniform& uniform, int x, int y)
+{
+    glUniform2i(uniform, x, y);
+    PrintGLError("setting 2 int uniform");
+}
+
+void Program::SetUniformInt(const Uniform& uniform, int x, int y, int z)
+{
+    glUniform3i(uniform, x, y, z);
+    PrintGLError("setting 3 int uniform");
+}
+
+void Program::SetUniformInt(const Uniform& uniform, int x, int y, int z, int w)
+{
+    glUniform4i(uniform, x, y, z, w);
+    PrintGLError("setting 4 int uniform");
+}
+
+void Program::SetUniform(const Uniform& uniform, float value)
+{
+    glUniform1f(uniform, value);
+    PrintGLError("setting float uniform");
+}
+
+void Program::SetUniform(const Uniform& uniform, float x, float y)
+{
+    glUniform2f(uniform, x, y);
+    PrintGLError("setting 2 float uniform");
+}
+
+void Program::SetUniform(const Uniform& uniform, float x, float y, float z)
+{
+    glUniform3f(uniform, x, y, z);
+    PrintGLError("setting 3 float uniform");
+}
+
+void Program::SetUniform(const Uniform& uniform, float x, float y, float z, float w)
+{
+    glUniform4f(uniform, x, y, z, w);
+    PrintGLError("setting 4 float uniform");
+}
+
+void Program::SetUniform(const Uniform& uniform, const int* values, unsigned count)
+{
+    glUniform1iv(uniform, count, values);
+    PrintGLError("setting float array uniform");
+}
+
+void Program::SetUniform(const Uniform& uniform, const float* values, unsigned count)
+{
+    glUniform1fv(uniform, count, values);
+    PrintGLError("setting float array uniform");
+}
+
+#ifdef GLFK_HAS_GLM
+void Program::SetUniform(const Uniform& uniform, const glm::vec2& value)
+{
+    SetUniform(value.x, value.y);
+}
+
+void Program::SetUniform(const Uniform& uniform, const glm::vec3& value)
+{
+    SetUniform(value.x, value.y, value.z);
+}
+
+void Program::SetUniform(const Uniform& uniform, const glm::vec4& value)
+{
+    SetUniform(value.x, value.y, value.z, value.w);
+}
+
+void Program::SetUniform(const Uniform& uniform, const glm::vec2* values, unsigned count)
+{
+    glUniform2fv(uniform, count, (float*)values);
+    PrintGLError("setting 2f array uniform");
+}
+
+void Program::SetUniform(const Uniform& uniform, const glm::vec3* values, unsigned count)
+{
+    glUniform3fv(uniform, count, (float*)values);
+    PrintGLError("setting 3f array uniform");
+}
+
+void Program::SetUniform(const Uniform& uniform, const glm::vec4* values, unsigned count)
+{
+    glUniform4fv(uniform, count, (float*)values);
+    PrintGLError("setting 4f array uniform");
+}
+
+void Program::SetUniform(const Uniform& uniform, const glm::mat3x3& value)
+{
+    glUniformMatrix3fv(uniform, 1, GL_FALSE, glm::value_ptr(value));
+    PrintGLError("setting mat3x3 uniform");
+}
+
+void Program::SetUniform( const Uniform& uniform, const glm::mat4x4& value)
+{
+    glUniformMatrix4fv(uniform, 1, GL_FALSE, glm::value_ptr(value));
+    PrintGLError("setting mmat 4x4 uniform");
+}
+#endif

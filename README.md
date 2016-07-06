@@ -7,6 +7,7 @@ Divided into Core and Extra.
 ### Main Core Goals ###
 
 - One opengl object = one class
+- Minimalistic, no complicated and confusing c++ structures
 - Only Utils.cpp and .h and Renderer.cpp and Renderer.h are requred so you can use what you need only.
 - Methods resembling original OpenGL function names
 - Automatic binding, optional unbinding on bindable objects
@@ -14,6 +15,7 @@ Divided into Core and Extra.
 ### Main Extra Goals ###
 
 - Simplify and abstract OpenGL context creation (GLFW/GLAD/others)
+- Integrate optional 3rd-party libraries which do the job better, then writing them from scratch
 - Use Core classes to define more complex non-GL structures like Material or Effect
 
 ## Core quality rules ##

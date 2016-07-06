@@ -4,10 +4,12 @@ The GNU General Public License v3.0
 -*/
 #include "Buffer.h"
 
-BaseBuffer::BaseBuffer()
+BaseBuffer::BaseBuffer(VertexArray& vao)
 {
+    GLFK_AUTO_BIND_OBJ(vao);
     glGenBuffers(1, &_buffer);
-    PrintGLError("gener'g buffer");
+    PrintGLError("generating buffer");
+    GLFK_AUTO_UNBIND_OBJ(vao);
 }
 
 BaseBuffer::~BaseBuffer()
@@ -28,7 +30,7 @@ void BaseBuffer::BindNone(GLenum target)
     PrintGLError("binding 0 buffer");
 }
 
-BaseBuffer& BaseBuffer::SetData(GLenum target, GLsizeiptr size, const GLvoid * data, GLenum usage)
+BaseBuffer& BaseBuffer::SetData(GLenum target, GLsizeiptr size, const GLvoid * data, Usage usage)
 {
     GLFK_AUTO_BIND(target);
     glBufferData(target, size, data, usage);
@@ -39,8 +41,8 @@ BaseBuffer& BaseBuffer::SetData(GLenum target, GLsizeiptr size, const GLvoid * d
 
 //--------------------------------------------------
 
-Buffer::Buffer(GLenum target)
-: _target(target)
+Buffer::Buffer(VertexArray& vao, GLenum target)
+: BaseBuffer(vao), _target(target)
 {
 }
 
@@ -56,7 +58,7 @@ Buffer& Buffer::Unbind()
     return *this;
 }
 
-Buffer& Buffer::SetData(GLsizeiptr size, const GLvoid * data, GLenum usage)
+Buffer& Buffer::SetData(GLsizeiptr size, const GLvoid * data, Usage usage)
 {
     BaseBuffer::SetData(_target, size, data, usage);
     return *this;
@@ -64,8 +66,8 @@ Buffer& Buffer::SetData(GLsizeiptr size, const GLvoid * data, GLenum usage)
 
 //-------------------------------------------------
 
-ArrayBuffer& ArrayBuffer::SetAttribPointer(GLuint index, GLint size, GLenum type,
-        GLboolean normalized, GLsizei stride, const GLvoid * pointer)
+ArrayBuffer& ArrayBuffer::SetAttribPointer(GLuint index, GLint size, AttribType type,
+        bool normalized, GLsizei stride, const GLvoid * pointer)
 {
     GLFK_AUTO_BIND();
     glVertexAttribPointer(index, size, type, normalized, stride, pointer);

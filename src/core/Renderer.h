@@ -18,6 +18,12 @@ The GNU General Public License v3.0
 # include <GL/gl.h>
 #endif
 
+#ifdef GLFK_HAS_GLM
+# include <glm/vec3.hpp>
+# include <glm/vec4.hpp>
+# include <glm/mat4x4.hpp>
+#endif
+
 /// Class encapsulating static functions to general OpenGL commands not bound to any object
 class Renderer
 {
@@ -34,9 +40,12 @@ typedef Renderer R;
 
 /// Automatically bind the object
 #define GLFK_AUTO_BIND(...) Bind(__VA_ARGS__)
+#define GLFK_AUTO_BIND_OBJ(obj, ...) obj.Bind(__VA_ARGS__)
 #ifdef GLFK_ENSURE_UNBIND
 # define GLFK_AUTO_UNBIND(...) Unbind(__VA_ARGS__)
+# define GLFK_AUTO_UNBIND_OBJ(obj, ...) obj.Unbind(__VA_ARGS__)
 #else
 # define GLFK_AUTO_UNBIND(...)
+# define GLFK_AUTO_UNBIND_OBJ(...)
 #endif
 

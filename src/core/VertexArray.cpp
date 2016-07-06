@@ -40,3 +40,9 @@ VertexArray& VertexArray::EnableAttribArray(GLuint index, bool enable)
     return *this;
 }
 
+void VertexArray::DrawElements(DrawMode mode, GLsizei count, IndicesType type, const GLvoid * indices)
+{
+    GLFK_AUTO_BIND();
+    Renderer::DrawElements(mode, count, type, indices);
+    GLFK_AUTO_UNBIND();
+}
