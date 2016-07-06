@@ -5,8 +5,9 @@ The GNU General Public License v3.0
 #pragma once
 
 // include opengl headers
+#include <glad/glad.h>
 #ifdef GLFK_HAS_GLFW
-# define GLFW_INCLUDE_GLCOREARB // make sure to include gl3 core header
+//# define GLFW_INCLUDE_GLCOREARB // make sure to include gl3 core header
 # include <GLFW/glfw3.h>
 #elif defined(__APPLE__)
 # include <OpenGL/gl3.h>

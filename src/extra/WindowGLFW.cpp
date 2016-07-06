@@ -9,7 +9,7 @@ The GNU General Public License v3.0
 #include <glad/glad.h>
 
 #define GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED // GLAD simulates gl.h
-#define GLFW_INCLUDE_GLCOREARB // make sure to include gl3 core header
+//# define GLFW_INCLUDE_GLCOREARB // make sure to include gl3 core header
 #include <GLFW/glfw3.h>
 
 static void glfw_error_cb(int err, const char * desc)
