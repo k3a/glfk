@@ -13,6 +13,9 @@ option(GLFK_ENSURE_UNBIND "Ensure unbinding every object which was automatically
 if (GLFK_DEBUG)
 	list(APPEND GLFK_DEFINES DEBUG=1)
 endif()
+if (GLFK_ENSURE_UNBIND)
+	list(APPEND GLFK_DEFINES GLFK_ENSURE_UNBIND=1)
+endif()
 
 include_directories("${CMAKE_SOURCE_DIR}/src" "${CMAKE_SOURCE_DIR}/deps")
 
