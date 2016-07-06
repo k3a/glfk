@@ -65,9 +65,11 @@ bool Window::Create(unsigned width, unsigned height, const char* title)
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+#ifndef WIN32
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-    //glfwWindowHint(GLFW_DEPTH_BITS, 16);
+#endif
+	//glfwWindowHint(GLFW_DEPTH_BITS, 16);
 
     _private->window = glfwCreateWindow(width, height, title, NULL, NULL);
     if (!_private->window)
