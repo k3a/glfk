@@ -9,7 +9,8 @@ The GNU General Public License v3.0
 #include "core/Renderer.h"
 #include "core/VertexArray.h"
 #include "core/Buffer.h"
-#include "core/Shaders.h"
+#include "core/Shader.h"
+#include "core/Texture.h"
 
 static float unitSquareVertPos[] = { 
     -1, 1, 0, // top left
@@ -24,16 +25,20 @@ static unsigned char unitSquareInd[] = {
 static const char* vsSrc = "\
 #version 150 \n\
 in vec3 inPos; \n\
+out vec2 vCoord; \n\
 void main(){ \n\
     gl_Position = vec4(inPos, 1.0); \n\
+    vCoord = inPos.xy * 0.5 + 0.5; \n\
 } \n\
 ";
 static const char* fsSrc = "\
 #version 150 \n\
+in vec2 vCoord; \n\
 out vec4 outColor; \n\
-uniform vec3 color; \n\
+uniform vec3 uColor; \n\
+uniform sampler2D uTexture; \n\
 void main() { \n\
-    outColor = vec4(color,1); \n\
+    outColor = vec4( texture(uTexture, vCoord.xy).rgb /*+ uColor/2.0*/ , 1.0); \n\
 }";
 
 static void resize_cb(unsigned w, unsigned h) 
@@ -61,7 +66,7 @@ int main()
     if (!prg.Link()) {
         std::cout << "Prog Error: " << prg.GetInfoLog() << std::endl;
     } else {
-        std::cout << "Prog Compiled OK: " << prg.GetNumActiveAttributes() << " attrs"
+        std::cout << "Prog Compiled OK: " << prg.GetNumActiveAttributes() << " attrs, "
             << prg.GetNumActiveUniforms() << " uniforms" << std::endl;
     }
 
@@ -74,7 +79,17 @@ int main()
 
     ElementArrayBuffer bi(vao);
     bi.SetData(sizeof(unitSquareInd), unitSquareInd);
-
+    
+    Texture2D tex;
+    unsigned char texData[] = {
+        255, 0, 0, 255,  0, 255, 0, 255,
+        0, 0, 255, 255,  255, 255, 0, 255
+    };
+    tex.SetImage(0, GL_RGB, 2, 2, GL_RGBA, GL_UNSIGNED_BYTE, texData);
+    tex.GenerateMipmap();
+    tex.SetToUnit(0);
+    prg.SetUniformTextureUnit("uTexture", tex.GetUnit());
+    
     R::ClearColor(0,1,1,0);
     float time = 0;
     
@@ -83,7 +98,7 @@ int main()
         R::Clear();
 
         prg.Use();
-        prg.SetUniform("color", (float)1.0, (float)sinf(time), (float)0.0);
+        prg.SetUniform("uColor", 0.0, sinf(time), 1.0);
         
         vao.DrawElements(VertexArray::TRIANGLE_FAN, 4, VertexArray::UNSIGNED_BYTE);
         

@@ -2,7 +2,7 @@
 Minimalistic and Modular OpenGL C++ Framework
 The GNU General Public License v3.0
 -*/
-#include "Shaders.h"
+#include "Shader.h"
 #include <stdlib.h>
 
 #ifdef GLFK_HAS_GLM
@@ -97,6 +97,12 @@ bool Program::Link()
     return _valid;
 }
 
+Program& Program::Validate()
+{
+    glValidateProgram(_program);
+    return *this;
+}
+
 std::string Program::GetInfoLog()const
 {
     std::string outLog;
@@ -143,109 +149,139 @@ Uniform Program::GetUniform(const std::string& name)
     return out;
 }
 
-void Program::SetUniformInt(const Uniform& uniform, int value)
+Program& Program::SetUniformInt(const Uniform& uniform, int value)
 {
+    GLFK_AUTO_BIND();
     glUniform1i(uniform, value);
     PrintGLError("setting int uniform");
+    return *this;
 }
 
-void Program::SetUniformInt(const Uniform& uniform, int x, int y)
+Program& Program::SetUniformInt(const Uniform& uniform, int x, int y)
 {
+    GLFK_AUTO_BIND();
     glUniform2i(uniform, x, y);
     PrintGLError("setting 2 int uniform");
+    return *this;
 }
 
-void Program::SetUniformInt(const Uniform& uniform, int x, int y, int z)
+Program& Program::SetUniformInt(const Uniform& uniform, int x, int y, int z)
 {
+    GLFK_AUTO_BIND();
     glUniform3i(uniform, x, y, z);
     PrintGLError("setting 3 int uniform");
+    return *this;
 }
 
-void Program::SetUniformInt(const Uniform& uniform, int x, int y, int z, int w)
+Program& Program::SetUniformInt(const Uniform& uniform, int x, int y, int z, int w)
 {
+    GLFK_AUTO_BIND();
     glUniform4i(uniform, x, y, z, w);
     PrintGLError("setting 4 int uniform");
+    return *this;
 }
 
-void Program::SetUniform(const Uniform& uniform, float value)
+Program& Program::SetUniform(const Uniform& uniform, float value)
 {
+    GLFK_AUTO_BIND();
     glUniform1f(uniform, value);
     PrintGLError("setting float uniform");
+    return *this;
 }
 
-void Program::SetUniform(const Uniform& uniform, float x, float y)
+Program& Program::SetUniform(const Uniform& uniform, float x, float y)
 {
+    GLFK_AUTO_BIND();
     glUniform2f(uniform, x, y);
     PrintGLError("setting 2 float uniform");
+    return *this;
 }
 
-void Program::SetUniform(const Uniform& uniform, float x, float y, float z)
+Program& Program::SetUniform(const Uniform& uniform, float x, float y, float z)
 {
+    GLFK_AUTO_BIND();
     glUniform3f(uniform, x, y, z);
     PrintGLError("setting 3 float uniform");
+    return *this;
 }
 
-void Program::SetUniform(const Uniform& uniform, float x, float y, float z, float w)
+Program& Program::SetUniform(const Uniform& uniform, float x, float y, float z, float w)
 {
+    GLFK_AUTO_BIND();
     glUniform4f(uniform, x, y, z, w);
     PrintGLError("setting 4 float uniform");
+    return *this;
 }
 
-void Program::SetUniform(const Uniform& uniform, const int* values, unsigned count)
+Program& Program::SetUniform(const Uniform& uniform, const int* values, unsigned count)
 {
+    GLFK_AUTO_BIND();
     glUniform1iv(uniform, count, values);
     PrintGLError("setting float array uniform");
+    return *this;
 }
 
-void Program::SetUniform(const Uniform& uniform, const float* values, unsigned count)
+Program& Program::SetUniform(const Uniform& uniform, const float* values, unsigned count)
 {
+    GLFK_AUTO_BIND();
     glUniform1fv(uniform, count, values);
     PrintGLError("setting float array uniform");
+    return *this;
 }
 
 #ifdef GLFK_HAS_GLM
-void Program::SetUniform(const Uniform& uniform, const glm::vec2& value)
+Program& Program::SetUniform(const Uniform& uniform, const glm::vec2& value)
 {
-    SetUniform(value.x, value.y);
+    return SetUniform(value.x, value.y);
 }
 
-void Program::SetUniform(const Uniform& uniform, const glm::vec3& value)
+Program& Program::SetUniform(const Uniform& uniform, const glm::vec3& value)
 {
-    SetUniform(value.x, value.y, value.z);
+    return SetUniform(value.x, value.y, value.z);
 }
 
-void Program::SetUniform(const Uniform& uniform, const glm::vec4& value)
+Program& Program::SetUniform(const Uniform& uniform, const glm::vec4& value)
 {
-    SetUniform(value.x, value.y, value.z, value.w);
+    return SetUniform(value.x, value.y, value.z, value.w);
 }
 
-void Program::SetUniform(const Uniform& uniform, const glm::vec2* values, unsigned count)
+Program& Program::SetUniform(const Uniform& uniform, const glm::vec2* values, unsigned count)
 {
+    GLFK_AUTO_BIND();
     glUniform2fv(uniform, count, (float*)values);
     PrintGLError("setting 2f array uniform");
+    return *this;
 }
 
-void Program::SetUniform(const Uniform& uniform, const glm::vec3* values, unsigned count)
+Program& Program::SetUniform(const Uniform& uniform, const glm::vec3* values, unsigned count)
 {
+    GLFK_AUTO_BIND();
     glUniform3fv(uniform, count, (float*)values);
     PrintGLError("setting 3f array uniform");
+    return *this;
 }
 
-void Program::SetUniform(const Uniform& uniform, const glm::vec4* values, unsigned count)
+Program& Program::SetUniform(const Uniform& uniform, const glm::vec4* values, unsigned count)
 {
+    GLFK_AUTO_BIND();
     glUniform4fv(uniform, count, (float*)values);
     PrintGLError("setting 4f array uniform");
+    return *this;
 }
 
-void Program::SetUniform(const Uniform& uniform, const glm::mat3x3& value)
+Program& Program::SetUniform(const Uniform& uniform, const glm::mat3x3& value)
 {
+    GLFK_AUTO_BIND();
     glUniformMatrix3fv(uniform, 1, GL_FALSE, glm::value_ptr(value));
     PrintGLError("setting mat3x3 uniform");
+    return *this;
 }
 
-void Program::SetUniform( const Uniform& uniform, const glm::mat4x4& value)
+Program& Program::SetUniform( const Uniform& uniform, const glm::mat4x4& value)
 {
+    GLFK_AUTO_BIND();
     glUniformMatrix4fv(uniform, 1, GL_FALSE, glm::value_ptr(value));
     PrintGLError("setting mmat 4x4 uniform");
+    return *this;
 }
 #endif

@@ -45,7 +45,7 @@ public:
     Buffer& Unbind();
     Buffer& SetData(GLsizeiptr size, const GLvoid * data, Usage usage = STATIC_DRAW);
 
-private:
+protected:
     GLenum _target;	
 };
 
