@@ -22,6 +22,13 @@ class Renderer
 		static void DrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid * indices = NULL);
 		static void DrawArrays(GLenum mode, GLint first, GLsizei count);
 };
-
 typedef Renderer R;
+
+// useful macros
+#define GLFK_AUTO_BIND(...) Bind(__VA_ARGS__)
+#ifdef GLFK_ENSURE_UNBIND
+# define GLFK_AUTO_UNBIND(...) Unbind(__VA_ARGS__)
+#else
+# define GLFK_AUTO_UNBIND(...)
+#endif
 

@@ -113,7 +113,7 @@ Program& Program::Use()
 	return *this;
 }
 
-GLint Program::GetIntVar(GLenum pname)const
+GLint Program::GetInt(GLenum pname)const
 {
 	GLint ret;
 	glGetProgramiv(_program, pname, &ret);

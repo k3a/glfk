@@ -26,12 +26,10 @@ void BaseBuffer::BindNone(GLenum target)
 
 BaseBuffer& BaseBuffer::SetData(GLenum target, GLsizeiptr size, const GLvoid * data, GLenum usage)
 {
-	Bind(target);
+	GLFK_AUTO_BIND(target);
 	glBufferData(target, size, data, usage);
 	PrintGLError("setting buffer data");
-#ifdef GLFK_UNBIND
-	BindNone(target);
-#endif
+	GLFK_AUTO_UNBIND(target);
 	return *this;
 }
 
@@ -65,8 +63,10 @@ Buffer& Buffer::SetData(GLsizeiptr size, const GLvoid * data, GLenum usage)
 ArrayBuffer& ArrayBuffer::SetAttribPointer(GLuint index, GLint size, GLenum type,
         GLboolean normalized, GLsizei stride, const GLvoid * pointer)
 {
+	GLFK_AUTO_BIND();
 	glVertexAttribPointer(index, size, type, normalized, stride, pointer);
 	PrintGLError("setting vertex attrib pointer");
+	GLFK_AUTO_UNBIND();
 	return *this;
 }
 

@@ -25,12 +25,13 @@ void VertexArray::BindNone()
 
 VertexArray& VertexArray::EnableAttribArray(GLuint index, bool enable)
 {
-	Bind();
-	if (enable)
+	GLFK_AUTO_BIND();
+	if (enable) {
 		glEnableVertexAttribArray(index);
-	else 
+	} else { 
 		glDisableVertexAttribArray(index);
-
+	}
+	GLFK_AUTO_UNBIND();		
 	PrintGLError("Enabling or disabling vertex attrib array for VAO");
 	return *this;
 }

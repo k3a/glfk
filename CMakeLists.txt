@@ -8,12 +8,13 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 option(GLFK_BUILD_EXAMPLES "Build GLFK examples" ON)
 option(GLFK_DEBUG "Enable debug build" ON)
+option(GLFK_ENSURE_UNBIND "Ensure unbinding every object which was automatically-binded" OFF)
 
 if (GLFK_DEBUG)
 	list(APPEND GLFK_DEFINES DEBUG=1)
 endif()
 
-include_directories("${CMAKE_SOURCE_DIR}/src")
+include_directories("${CMAKE_SOURCE_DIR}/src" "${CMAKE_SOURCE_DIR}/deps")
 
 file(GLOB CORE_FILES
 		"src/core/*"
