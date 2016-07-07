@@ -4,6 +4,10 @@ The GNU General Public License v3.0
 -*/
 #include "VertexArray.h"
 
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
+GLuint VertexArray::s_boundArray = 0;
+#endif
+
 VertexArray::VertexArray()
 {
     glGenVertexArrays(1, &_array);
@@ -17,12 +21,22 @@ VertexArray::~VertexArray()
 
 VertexArray& VertexArray::Bind()
 {
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
+    if (s_boundArray == _array)
+        return *this;
+    s_boundArray = _array;
+#endif
     glBindVertexArray(_array);
     PrintGLError("binding VAO");
     return *this;
 }
 void VertexArray::BindNone()
 {
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
+    if (s_boundArray == 0)
+        return;
+    s_boundArray = 0;
+#endif
     glBindVertexArray(0);
     PrintGLError("binding 0 VAO");
 }

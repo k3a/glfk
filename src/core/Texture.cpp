@@ -4,6 +4,10 @@ The GNU General Public License v3.0
 -*/
 #include "Texture.h"
 
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
+BaseTexture::TargetTextureMap BaseTexture::s_boundTextureToTarget;
+#endif
+
 BaseTexture::BaseTexture()
 {
     glGenTextures(1, &_texture);
@@ -18,6 +22,11 @@ BaseTexture::~BaseTexture()
 
 BaseTexture& BaseTexture::Bind(GLenum target)
 {
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
+    if (s_boundTextureToTarget[target] == _texture)
+        return *this;
+    s_boundTextureToTarget[target] = _texture;
+#endif
     glBindTexture(target, _texture);
     PrintGLError("binding a texture");
     return *this;
@@ -25,6 +34,11 @@ BaseTexture& BaseTexture::Bind(GLenum target)
 
 void BaseTexture::BindNone(GLenum target)
 {
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
+    if (s_boundTextureToTarget[target] == 0)
+        return;
+    s_boundTextureToTarget[target] = 0;
+#endif
     glBindTexture(target, 0);
     PrintGLError("binding a texture");
 }
@@ -73,14 +87,15 @@ BaseTexture& BaseTexture::SetWrap(GLenum target, WrapMode s)
 }
 BaseTexture& BaseTexture::SetWrap(GLenum target, WrapMode s, WrapMode t)
 {
-    return SetInt(target, GL_TEXTURE_WRAP_S, s);
-    return SetInt(target, GL_TEXTURE_WRAP_T, t);
+    return SetInt(target, GL_TEXTURE_WRAP_S, s).SetInt(target, GL_TEXTURE_WRAP_T, t);
 }
 BaseTexture& BaseTexture::SetWrap(GLenum target, WrapMode s, WrapMode t, WrapMode r)
 {
-    return SetInt(target, GL_TEXTURE_WRAP_S, s);
-    return SetInt(target, GL_TEXTURE_WRAP_T, t);
-    return SetInt(target, GL_TEXTURE_WRAP_R, r);
+    return SetInt(target, GL_TEXTURE_WRAP_S, s).SetInt(target, GL_TEXTURE_WRAP_T, t).SetInt(target, GL_TEXTURE_WRAP_R, r);
+}
+BaseTexture& BaseTexture::SetFilter(GLenum target, MinFilterMode minifying, MagFilterMode magnifying)
+{
+    return SetInt(target, GL_TEXTURE_MIN_FILTER, minifying).SetInt(target, GL_TEXTURE_MAG_FILTER, magnifying);
 }
 
 //-----------------------------------------------

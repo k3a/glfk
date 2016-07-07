@@ -37,9 +37,17 @@ void PrintGLError(const char* where)
 #ifndef DEBUG
     return;
 #endif
-    
+	
+	static GLenum prevError = 0;
+    static const char* prevErrorWhere = NULL;
     GLenum error = glGetError();
-    if (!error) return;
+    if (!error) {
+		return; 
+	} else if (error == prevError && where == prevErrorWhere) {
+		return; // don't display the same error more times
+	}
+	prevError = error;
+    prevErrorWhere = where;
     
     if(error == GL_NO_ERROR)
         printf("GL error during %s: GL_NO_ERROR: No error has been recorded.\n", where);

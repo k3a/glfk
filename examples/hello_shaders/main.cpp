@@ -72,8 +72,8 @@ int main()
     if (!prg.Link()) {
         std::cout << "Prog Error: " << prg.GetInfoLog() << std::endl;
     } else {
-        std::cout << "Prog Compiled OK: " << prg.GetNumActiveAttributes() << " attrs, "
-            << prg.GetNumActiveUniforms() << " uniforms" << std::endl;
+        std::cout << "Prog Compiled OK: " << prg.GetNumActiveAttributes()
+            << " attrs, " << prg.GetNumActiveUniforms() << " uniforms" << std::endl;
     }
 
     VertexArray vao;

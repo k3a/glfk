@@ -37,6 +37,22 @@ class Renderer
 /// Shortcut to Renderer
 typedef Renderer R;
 
+// ---------------------------------------------------------------
+
+/// Class holding a reference counted GL object
+/*class GLObject
+{
+public:
+    GLObject(GLuint obj) : _obj(obj), _refs(0) {};
+    GLObject(const GLObject& other) { _refs++; };
+    
+    ~GLObject();
+    
+private:
+    GLuint _obj;
+    unsigned _refs;
+};*/
+
 // useful macros -------------------------------------------------
 
 /// Automatically bind the object

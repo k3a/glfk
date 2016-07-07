@@ -35,6 +35,7 @@ public:
     VertexArray();
     ~VertexArray();
 
+    GLuint GL()const{ return _array; }
     VertexArray& Bind();
     static void BindNone();
     VertexArray& Unbind(){ BindNone(); return *this; };
@@ -44,5 +45,9 @@ public:
     void DrawElements(DrawMode mode, GLsizei count, IndicesType type, const GLvoid * indices = NULL);
 
 private:
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
+    static GLuint s_boundArray;
+#endif
+    
     GLuint _array;
 };

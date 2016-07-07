@@ -4,6 +4,7 @@ The GNU General Public License v3.0
 -*/
 #pragma once
 
+#include <map>
 #include "Renderer.h"
 #include "Utils.h"
 
@@ -17,9 +18,32 @@ public:
         REPEAT = GL_REPEAT
     };
     
+    enum MinFilterMode {
+        /// Returns the value of the texture element that is nearest (in Manhattan distance) to the specified texture coordinates.
+        MIN_NEAREST = GL_NEAREST,
+        /// Returns the weighted average of the four texture elements that are closest to the specified texture coordinates.
+        MIN_LINEAR = GL_LINEAR,
+        /// Chooses the mipmap that most closely matches the size of the pixel being textured and uses the GL_NEAREST criterion
+        MIN_NEAREST_MIPMAP_NEAREST = GL_NEAREST_MIPMAP_NEAREST,
+        /// Chooses the mipmap that most closely matches the size of the pixel being textured and uses the GL_LINEAR criterion
+        MIN_LINEAR_MIPMAP_NEAREST = GL_LINEAR_MIPMAP_NEAREST,
+        /// Chooses the two mipmaps that most closely match the size of the pixel being textured and uses the GL_NEAREST criterion
+        MIN_NEAREST_MIPMAP_LINEAR = GL_NEAREST_MIPMAP_LINEAR,
+        /// Chooses the two mipmaps that most closely match the size of the pixel being textured and uses the GL_LINEAR criterion
+        MIN_LINEAR_MIPMAP_LINEAR = GL_LINEAR_MIPMAP_LINEAR
+    };
+    
+    enum MagFilterMode {
+        /// Returns the value of the texture element that is nearest (in Manhattan distance) to the specified texture coordinates.
+        MAG_NEAREST = GL_NEAREST,
+        /// Returns the weighted average of the texture elements that are closest to the specified texture coordinates.
+        MAG_LINEAR = GL_LINEAR
+    };
+    
     BaseTexture();
     ~BaseTexture();
     
+    GLuint GL()const{ return _texture; }
     BaseTexture& Bind(GLenum target);
     static void BindNone(GLenum target);
     BaseTexture& Unbind(GLenum target){ BindNone(target); return *this; };
@@ -38,7 +62,14 @@ public:
     BaseTexture& SetWrap(GLenum target, WrapMode s, WrapMode t);
     BaseTexture& SetWrap(GLenum target, WrapMode s, WrapMode t, WrapMode r);
     
+    BaseTexture& SetFilter(GLenum target, MinFilterMode minifying, MagFilterMode magnifying);
+    
 private:
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
+    typedef std::map<GLenum, GLuint> TargetTextureMap;
+    static TargetTextureMap s_boundTextureToTarget;
+#endif
+    
     GLuint _texture;
     unsigned _unit;
 };
@@ -64,6 +95,10 @@ public:
     BaseTexture& SetWrap(GLenum target, WrapMode s){ return (Texture&)BaseTexture::SetWrap(_target, s); };
     BaseTexture& SetWrap(GLenum target, WrapMode s, WrapMode t){ return (Texture&)BaseTexture::SetWrap(_target, s, t); };
     BaseTexture& SetWrap(GLenum target, WrapMode s, WrapMode t, WrapMode r){ return (Texture&)BaseTexture::SetWrap(_target, s, t, r); };
+    
+    BaseTexture& SetFilter(GLenum target, MinFilterMode minifying, MagFilterMode magnifying){
+        return (Texture&)BaseTexture::SetFilter(_target, minifying, magnifying);
+    };
     
 protected:
     GLenum _target;

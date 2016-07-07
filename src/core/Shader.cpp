@@ -62,9 +62,11 @@ std::string BaseShader::GetInfoLog()const
 
 //-----------------------------------------------
 
-//-----------------------------------------------
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
+GLuint Program::s_boundProgram = 0;
+#endif
 
-Program::Program() 
+Program::Program()
 : _valid(false)
 {
     _program = glCreateProgram();
@@ -122,6 +124,11 @@ std::string Program::GetInfoLog()const
 
 Program& Program::Use()
 {
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
+    if (s_boundProgram == _program)
+        return *this;
+    s_boundProgram = _program;
+#endif
     glUseProgram(_program);
     PrintGLError("using program");
     return *this;

@@ -2,6 +2,8 @@ GLFK - Minimalistic and Modular OpenGL C++ Framework
 ====================================================
 
 C++ OOP Wrapper for OpenGL 3.2+.
+Static linking of dependencies (to prevent broken builds on dependency updates).
+Builds static library by default (dynamic linking is not very useful here as often only one graphical app is running).
 
 ## Structure ##
 Divided into Core and Extra.

@@ -4,6 +4,10 @@ The GNU General Public License v3.0
 -*/
 #include "Buffer.h"
 
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
+BaseBuffer::TargetBufferMap BaseBuffer::s_boundBufferToTarget;
+#endif
+
 BaseBuffer::BaseBuffer(VertexArray& vao)
 {
     GLFK_AUTO_BIND_OBJ(vao);
@@ -20,12 +24,22 @@ BaseBuffer::~BaseBuffer()
 
 BaseBuffer& BaseBuffer::Bind(GLenum target) 
 {
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
+    if (s_boundBufferToTarget[target] == _buffer)
+        return *this;
+    s_boundBufferToTarget[target] = _buffer;
+#endif
     glBindBuffer(target, _buffer);
     PrintGLError("binding buffer");
     return *this;
 }
 void BaseBuffer::BindNone(GLenum target)
 {
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
+    if (s_boundBufferToTarget[target] == 0)
+        return;
+    s_boundBufferToTarget[target] = 0;
+#endif
     glBindBuffer(target, 0);
     PrintGLError("binding 0 buffer");
 }

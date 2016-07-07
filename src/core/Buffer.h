@@ -8,6 +8,8 @@ The GNU General Public License v3.0
 #include "Utils.h"
 #include "VertexArray.h"
 
+#include <map>
+
 /// Vertex Buffer Object (VBO)
 class BaseBuffer : public NoCopy
 {
@@ -27,12 +29,18 @@ public:
     BaseBuffer(VertexArray& vao);
     ~BaseBuffer();
 
+    GLuint GL()const{ return _buffer; }
     BaseBuffer& Bind(GLenum target);
     static void BindNone(GLenum target);
     BaseBuffer& Unbind(GLenum target){ BindNone(target); return *this; };
     BaseBuffer& SetData(GLenum target, GLsizeiptr size, const GLvoid * data, Usage usage = STATIC_DRAW);
 
 private:
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
+    typedef std::map<GLenum, GLuint> TargetBufferMap;
+    static TargetBufferMap s_boundBufferToTarget;
+#endif
+    
     GLuint _buffer;
 };
 

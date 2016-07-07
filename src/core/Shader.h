@@ -17,6 +17,7 @@ public:
     BaseShader(GLenum shaderType);
     ~BaseShader();
 
+    GLuint GL()const{ return _shader; }
     bool Compile();
     std::string GetInfoLog()const;
     BaseShader& SetSource(std::string str);
@@ -61,6 +62,7 @@ public:
     Program();
     ~Program();
 
+    GLuint GL()const{ return _program; }
     Program& AttachShader(const BaseShader& sh);
     /// Links the attached shaders. Possible errors returned by GetInfoLog().
     bool Link();
@@ -166,6 +168,10 @@ public:
     unsigned GetNumActiveUniforms()const{ return GetInt(GL_ACTIVE_UNIFORMS); };
     
 private:
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
+    static GLuint s_boundProgram;
+#endif
+    
     GLuint _program;
     bool _valid;
 };
