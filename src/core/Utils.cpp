@@ -32,7 +32,7 @@ std::string ReadFile(const char* path)
     return outBuff;
 }
 
-void PrintGLError(const char* where)
+void PrintGLErrorImpl(const char* where)
 {
 #ifndef DEBUG
     return;

@@ -11,7 +11,7 @@ The GNU General Public License v3.0
 #include <map>
 
 /// Vertex Buffer Object (VBO)
-class BaseBuffer : public NoCopy
+class BaseBuffer : public GLObject
 {
 public:
     enum Usage {
@@ -27,9 +27,7 @@ public:
     };
     
     BaseBuffer(VertexArray& vao);
-    ~BaseBuffer();
 
-    GLuint GL()const{ return _buffer; }
     BaseBuffer& Bind(GLenum target);
     static void BindNone(GLenum target);
     BaseBuffer& Unbind(GLenum target){ BindNone(target); return *this; };
@@ -40,8 +38,6 @@ private:
     typedef std::map<GLenum, GLuint> TargetBufferMap;
     static TargetBufferMap s_boundBufferToTarget;
 #endif
-    
-    GLuint _buffer;
 };
 
 /// Vertex Buffer Object (VBO) for a single target

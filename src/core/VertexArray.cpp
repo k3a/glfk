@@ -10,23 +10,21 @@ GLuint VertexArray::s_boundArray = 0;
 
 VertexArray::VertexArray()
 {
-    glGenVertexArrays(1, &_array);
+    GLuint array;
+    glGenVertexArrays(1, &array);
     PrintGLError("creating VAO");
-}
-VertexArray::~VertexArray()
-{
-    glDeleteVertexArrays(1, &_array);
-    PrintGLError("deleting VAO");
+    
+    AssignGLObject(array, glDeleteVertexArrays);
 }
 
 VertexArray& VertexArray::Bind()
 {
 #ifdef GLFK_PREVENT_MULTIPLE_BIND
-    if (s_boundArray == _array)
+    if (s_boundArray == *this)
         return *this;
-    s_boundArray = _array;
+    s_boundArray = *this;
 #endif
-    glBindVertexArray(_array);
+    glBindVertexArray(*this);
     PrintGLError("binding VAO");
     return *this;
 }

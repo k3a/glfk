@@ -11,25 +11,24 @@ BaseBuffer::TargetBufferMap BaseBuffer::s_boundBufferToTarget;
 BaseBuffer::BaseBuffer(VertexArray& vao)
 {
     GLFK_AUTO_BIND_OBJ(vao);
-    glGenBuffers(1, &_buffer);
+    
+    GLuint buffer;
+    glGenBuffers(1, &buffer);
     PrintGLError("generating buffer");
+    
+    AssignGLObject(buffer, glDeleteBuffers);
+    
     GLFK_AUTO_UNBIND_OBJ(vao);
-}
-
-BaseBuffer::~BaseBuffer()
-{
-    glDeleteBuffers(1, &_buffer);
-    PrintGLError("deleting buffer");
 }
 
 BaseBuffer& BaseBuffer::Bind(GLenum target) 
 {
 #ifdef GLFK_PREVENT_MULTIPLE_BIND
-    if (s_boundBufferToTarget[target] == _buffer)
+    if (s_boundBufferToTarget[target] == *this)
         return *this;
-    s_boundBufferToTarget[target] = _buffer;
+    s_boundBufferToTarget[target] = *this;
 #endif
-    glBindBuffer(target, _buffer);
+    glBindBuffer(target, *this);
     PrintGLError("binding buffer");
     return *this;
 }

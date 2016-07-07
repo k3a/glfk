@@ -12,32 +12,26 @@ The GNU General Public License v3.0
 BaseShader::BaseShader(GLenum shaderType) 
 : _valid(false)
 {
-    _shader = glCreateShader(shaderType);
+    AssignGLObject(glCreateShader(shaderType), glDeleteShader);
     PrintGLError("creating shader");
 }
-BaseShader::~BaseShader()
-{
-    printf("deleting shader\n");
-    glDeleteShader(_shader);
-    PrintGLError("deleting shader");
-}
-BaseShader& BaseShader::SetSource(std::string str) 
+BaseShader& BaseShader::SetSource(std::string str)
 {
     if (str.length() == 0) 
         printf("%s: empty source!\n", __FUNCTION__);
 
     const char* ptr = str.c_str();
-    glShaderSource(_shader, 1, &ptr, NULL);
+    glShaderSource(*this, 1, &ptr, NULL);
     PrintGLError("setting shader source");
     return *this;
 }
 bool BaseShader::Compile()
 {
-    glCompileShader(_shader);
+    glCompileShader(*this);
     PrintGLError("compiling shader");
 
     GLint success = 0;
-    glGetShaderiv(_shader, GL_COMPILE_STATUS, &success);
+    glGetShaderiv(*this, GL_COMPILE_STATUS, &success);
     PrintGLError("getting compile status");
 
     _valid = success != GL_FALSE;
@@ -48,11 +42,11 @@ std::string BaseShader::GetInfoLog()const
     std::string outLog;
     GLint logSize = 0;
 
-    glGetShaderiv(_shader, GL_INFO_LOG_LENGTH, &logSize);
+    glGetShaderiv(*this, GL_INFO_LOG_LENGTH, &logSize);
     PrintGLError("getting shader iv");
 
     GLchar *errorLog = (GLchar *)malloc(logSize);
-    glGetShaderInfoLog(_shader, logSize, &logSize, errorLog);
+    glGetShaderInfoLog(*this, logSize, &logSize, errorLog);
     PrintGLError("getting shader log");
     outLog = errorLog;
     free(errorLog);
@@ -69,30 +63,24 @@ GLuint Program::s_boundProgram = 0;
 Program::Program()
 : _valid(false)
 {
-    _program = glCreateProgram();
+    AssignGLObject(glCreateProgram(), glDeleteProgram);
     PrintGLError("creating program");
-}
-
-Program::~Program()
-{
-    glDeleteProgram(_program);
-    PrintGLError("deleting program");
 }
 
 Program& Program::AttachShader(const BaseShader& sh)
 {
-    glAttachShader(_program, sh._shader);
+    glAttachShader(*this, sh);
     PrintGLError("attaching shader");
     return *this;
 }
 
 bool Program::Link()
 {
-    glLinkProgram(_program);
+    glLinkProgram(*this);
     PrintGLError("linking program");
 
     GLint success = 0;
-    glGetProgramiv(_program, GL_LINK_STATUS, &success);
+    glGetProgramiv(*this, GL_LINK_STATUS, &success);
     PrintGLError("getting program link status");
 
     _valid = success != GL_FALSE;
@@ -101,7 +89,7 @@ bool Program::Link()
 
 Program& Program::Validate()
 {
-    glValidateProgram(_program);
+    glValidateProgram(*this);
     return *this;
 }
 
@@ -110,11 +98,11 @@ std::string Program::GetInfoLog()const
     std::string outLog;
     GLint logSize = 0;
 
-    glGetProgramiv(_program, GL_INFO_LOG_LENGTH, &logSize);
+    glGetProgramiv(*this, GL_INFO_LOG_LENGTH, &logSize);
     PrintGLError("getting program iv");
 
     GLchar *errorLog = (GLchar *)malloc(logSize);
-    glGetProgramInfoLog(_program, logSize, &logSize, errorLog);
+    glGetProgramInfoLog(*this, logSize, &logSize, errorLog);
     PrintGLError("getting program info log");
     outLog = errorLog;
     free(errorLog);
@@ -125,11 +113,11 @@ std::string Program::GetInfoLog()const
 Program& Program::Use()
 {
 #ifdef GLFK_PREVENT_MULTIPLE_BIND
-    if (s_boundProgram == _program)
+    if (s_boundProgram == *this)
         return *this;
-    s_boundProgram = _program;
+    s_boundProgram = *this;
 #endif
-    glUseProgram(_program);
+    glUseProgram(*this);
     PrintGLError("using program");
     return *this;
 }
@@ -137,21 +125,21 @@ Program& Program::Use()
 GLint Program::GetInt(GLenum pname)const
 {
     GLint ret;
-    glGetProgramiv(_program, pname, &ret);
+    glGetProgramiv(*this, pname, &ret);
     PrintGLError("glGetProgramiv");
     return ret;
 }
 
 Attribute Program::GetAttribute(const std::string& name)
 {
-    Attribute out = glGetAttribLocation( _program, name.c_str() );
+    Attribute out = glGetAttribLocation( *this, name.c_str() );
     PrintGLError("getting attribute location");
     return out;
 }
 
 Uniform Program::GetUniform(const std::string& name)
 {
-    Uniform out = glGetUniformLocation(_program, name.c_str());
+    Uniform out = glGetUniformLocation(*this, name.c_str());
     PrintGLError("getting uniform location");
     return out;
 }

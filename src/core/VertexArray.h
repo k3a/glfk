@@ -8,7 +8,7 @@ The GNU General Public License v3.0
 #include "Utils.h"
 
 /// Vertex Array Object (VAO)
-class VertexArray : public NoCopy
+class VertexArray : public GLObject
 {
 public:
     enum DrawMode {
@@ -33,9 +33,7 @@ public:
     };
     
     VertexArray();
-    ~VertexArray();
 
-    GLuint GL()const{ return _array; }
     VertexArray& Bind();
     static void BindNone();
     VertexArray& Unbind(){ BindNone(); return *this; };
@@ -48,6 +46,4 @@ private:
 #ifdef GLFK_PREVENT_MULTIPLE_BIND
     static GLuint s_boundArray;
 #endif
-    
-    GLuint _array;
 };

@@ -25,6 +25,10 @@ The GNU General Public License v3.0
 # include <glm/mat4x4.hpp>
 #endif
 
+#include <assert.h>
+
+#include "Utils.h"
+
 /// Class encapsulating static functions to general OpenGL commands not bound to any object
 class Renderer
 {
@@ -39,23 +43,107 @@ typedef Renderer R;
 
 // ---------------------------------------------------------------
 
-/// Class holding a reference counted GL object
-/*class GLObject
+/// Print refence counting done with GLObject
+#ifdef GLFK_DEBUG_REF_COUNTING
+# include <stdio.h>
+#endif
+
+/// Class holding a reference counted GL object (OpenGL classes holding a GL objects derives from this)
+class GLObject
 {
-public:
-    GLObject(GLuint obj) : _obj(obj), _refs(0) {};
-    GLObject(const GLObject& other) { _refs++; };
+protected:
+    typedef void(*DeleteObjectCallbackType1)(GLuint obj);
+    typedef void(*DeleteObjectCallbackType2)(GLsizei n, const GLuint* ptr);
     
-    ~GLObject();
+    /// Default constructor
+    GLObject() : _obj(0), _refs(new unsigned(1)), _del1(NULL), _del2(NULL) {
+#ifdef GLFK_DEBUG_REF_COUNTING
+        printf("%p: new GLObject\n", this);
+#endif
+    };
+    
+    /// Copy constructor
+    GLObject(const GLObject& other) : _obj(other._obj), _refs(other._refs), _del1(other._del1), _del2(other._del2) {
+#ifdef GLFK_DEBUG_REF_COUNTING
+        printf("%p: copy with obj %u\n", this, _obj);
+#endif
+        Retain(); };
+    ~GLObject(){ if (_obj>0) Release(); };
+    
+    /// Copy operator
+    GLObject& operator=(const GLObject& other){
+        if (this != &other){
+#ifdef GLFK_DEBUG_REF_COUNTING
+            printf("%p: assigning obj %u from other GLObject %p\n", this, _obj, &other);
+#endif
+            Release();
+            _obj = other._obj;
+            _refs = other._refs;
+            Retain();
+        }
+        return *this;
+    }
+    
+    /// Assign a OpenGL object and associated OpenGL Delete function. Can be called one time only.
+    GLObject& AssignGLObject(GLuint obj, DeleteObjectCallbackType1 del1) {
+        assert(_obj == 0); // assign called second time
+        _obj = obj;
+        _del1 = del1;
+#ifdef GLFK_DEBUG_REF_COUNTING
+        printf("%p: assigned obj %u\n", this, _obj);
+#endif
+        return *this;
+    }
+    /// Assign a OpenGL object and associated OpenGL Delete function. Can be called one time only.
+    GLObject& AssignGLObject(GLuint obj, DeleteObjectCallbackType2 del2) {
+        assert(_obj == 0); // assign called second time
+        _obj = obj;
+        _del2 = del2;
+#ifdef GLFK_DEBUG_REF_COUNTING
+        printf("%p: assigned obj %u\n", this, _obj);
+#endif
+        return *this;
+    }
+    
+    operator GLuint()const{ return _obj; }
+    
+    /// Retain this object, incrementing reference count
+    GLObject& Retain(){ ++*_refs; return *this; };
+    
+    /// Release this object, decrementing reference count
+    GLObject& Release(){
+        assert(*_refs > 0); // attempt to release a released object
+        if (*_refs == 1) {
+#ifdef GLFK_DEBUG_REF_COUNTING
+            printf("%p: deleting obj %u\n", this, _obj);
+#endif
+            if (_del1) {
+                _del1(_obj);
+                PrintGLError("deleting gl object");
+            } else if (_del2) {
+                _del2(1, &_obj);
+                PrintGLError("deleting gl object");
+            }
+            _obj = 0;
+            delete _refs;
+        }
+        --*_refs;
+        return *this;
+    };
+    
+    /// Returns current reference count
+    unsigned RefCount()const{ return *_refs; };
     
 private:
     GLuint _obj;
-    unsigned _refs;
-};*/
+    unsigned *_refs;
+    DeleteObjectCallbackType1 _del1;
+    DeleteObjectCallbackType2 _del2;
+};
 
 // useful macros -------------------------------------------------
 
-/// Automatically bind the object
+/// Automatically bind an object
 #define GLFK_AUTO_BIND(...) Bind(__VA_ARGS__)
 #define GLFK_AUTO_BIND_OBJ(obj, ...) obj.Bind(__VA_ARGS__)
 #ifdef GLFK_ENSURE_UNBIND

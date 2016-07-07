@@ -9,22 +9,20 @@ The GNU General Public License v3.0
 #include <string>
 
 /// Class encapsulating Shader Object
-class BaseShader : public NoCopy
+class BaseShader : public GLObject
 {
     friend class Program;
 
 public:
     BaseShader(GLenum shaderType);
-    ~BaseShader();
+    void DeleteGLObject(GLuint obj);
 
-    GLuint GL()const{ return _shader; }
     bool Compile();
     std::string GetInfoLog()const;
     BaseShader& SetSource(std::string str);
     bool IsValid()const{ return _valid; };
 
 private:
-    GLuint _shader;
     bool _valid;
 };
 
@@ -32,10 +30,10 @@ private:
 class VertexShader : public BaseShader
 {
 public:
-    static BaseShader* FromString(std::string src) {
-        return &(new BaseShader(GL_VERTEX_SHADER))->SetSource(src);
+    static BaseShader FromString(std::string src) {
+        return BaseShader(GL_VERTEX_SHADER).SetSource(src);
     };
-    static BaseShader* FromFile(const char* path){ 
+    static BaseShader FromFile(const char* path){
         return FromString(ReadFile(path));
     };
 };
@@ -44,10 +42,10 @@ public:
 class FragmentShader : public BaseShader
 {
 public:
-    static BaseShader* FromString(std::string src) {
-        return &(new BaseShader(GL_FRAGMENT_SHADER))->SetSource(src);
+    static BaseShader FromString(std::string src) {
+        return BaseShader(GL_FRAGMENT_SHADER).SetSource(src);
     };
-    static BaseShader* FromFile(const char* path){ 
+    static BaseShader FromFile(const char* path){
         return FromString(ReadFile(path));
     };
 };
@@ -56,13 +54,11 @@ typedef GLint Attribute;
 typedef GLint Uniform;
 
 /// Program Object
-class Program : public NoCopy
+class Program : public GLObject
 {
 public:
     Program();
-    ~Program();
 
-    GLuint GL()const{ return _program; }
     Program& AttachShader(const BaseShader& sh);
     /// Links the attached shaders. Possible errors returned by GetInfoLog().
     bool Link();
@@ -172,7 +168,6 @@ private:
     static GLuint s_boundProgram;
 #endif
     
-    GLuint _program;
     bool _valid;
 };
 
