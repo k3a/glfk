@@ -80,9 +80,6 @@ int main()
     prg.AttachShader(vs).AttachShader(fs);
     if (!prg.Link()) {
         std::cout << "Prog Error: " << prg.GetInfoLog() << std::endl;
-    } else {
-        std::cout << "Prog Compiled OK: " << prg.GetNumActiveAttributes()
-            << " attrs, " << prg.GetNumActiveUniforms() << " uniforms" << std::endl;
     }
 
     VertexArray vao;
@@ -138,6 +135,7 @@ int main()
         prg.Use();
         prg.SetUniformTextureUnit("u_sTexture", tex.GetTextureUnit());
         prg.SetUniformFloat("u_vScale", (1.0+sinf(time))/2.0, (1.0+sinf(time))/2.0);
+        
         vao.DrawArrays(DrawMode::TRIANGLE_FAN, 0, 4);
    
         // draw to window
