@@ -84,7 +84,7 @@ int main()
         // vertex buffer
         ArrayBuffer bv(vao);
         bv.SetData(sizeof(unitSquareVertPos), unitSquareVertPos);
-        bv.SetAttribPointer(prg.GetAttribute("inPos"), 3, ArrayBuffer::FLOAT);
+        bv.SetAttribPointer(prg.GetAttribute("inPos"), 3, AttribType::FLOAT);
         vao.EnableAttribArray(prg.GetAttribute("inPos"));
 
         // index buffer
@@ -100,10 +100,10 @@ int main()
     };
     tex.SetImage(0, GL_RGB, 2, 2, GL_RGBA, GL_UNSIGNED_BYTE, texData);
     tex.GenerateMipmap();
-    tex.SetToUnit(0);
+    tex.SetTextureUnit(TextureUnit(0));
     
     // set texture to program uniform
-    prg.SetUniformTextureUnit("uTexture", tex.GetUnit());
+    prg.SetUniformTextureUnit("uTexture", tex.GetTextureUnit());
     
     // specify clear color
     R::ClearColor(0,1,1,0);
@@ -119,7 +119,7 @@ int main()
         prg.SetUniformFloat("uColor", 0, sinf(time), 1);
         
         // draw elements of VAO
-        vao.DrawElements(VertexArray::TRIANGLE_FAN, 4, VertexArray::UNSIGNED_BYTE);
+        vao.DrawElements(DrawMode::TRIANGLE_FAN, 4, IndicesType::UNSIGNED_BYTE);
         
         // swap buffes and poll events
         win.EndFrame();

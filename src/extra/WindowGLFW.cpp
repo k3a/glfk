@@ -20,6 +20,7 @@ static void glfw_error_cb(int err, const char * desc)
 # include <stdarg.h>
 # include "../gldebug.h"
 # include "core/Utils.h"
+static bool s_debugLogEnabled = false;
 void glad_post_cb(const char *name, void *funcptr, int len_args, ...) {
     va_list vl;
     
@@ -27,19 +28,33 @@ void glad_post_cb(const char *name, void *funcptr, int len_args, ...) {
         return; // don't track glGetError
     }
     
-    printf("> %s(", name);
-    va_start(vl, len_args);
-    for (int i=0; i<len_args; i++) {
-        unsigned arg = va_arg(vl, unsigned);
-        printf("%s%s", (i>0)?", ":"", GLEnumToString(arg));
+    if (s_debugLogEnabled) {
+        
+        printf(".. %s(", name);
+        
+        va_start(vl, len_args);
+        for (int i=0; i<len_args; i++) {
+            unsigned arg = va_arg(vl, unsigned);
+            printf("%s%u{%s}", (i>0)?", ":"", arg, GLEnumToString(arg));
+        }
+        va_end(vl);
+        
+        printf(")\n");
+        
     }
-    va_end(vl);
-    printf(")\n");
     
     GLenum err = glad_glGetError();
     if (err != GL_NO_ERROR) {
-        printf("GL Error 0x%X : %s", err, GLErrorToString(err));
+        printf("GL Error 0x%X : %s\n", err, GLErrorToString(err));
     }
+}
+void Window::EnableDebugLog(bool enable)
+{
+    s_debugLogEnabled = enable;
+}
+#else 
+void Window::EnableDebugLog(bool enable)
+{
 }
 #endif
 
@@ -95,7 +110,7 @@ bool Window::Create(unsigned width, unsigned height, const char* title)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 #endif
-	//glfwWindowHint(GLFW_DEPTH_BITS, 16);
+    //glfwWindowHint(GLFW_DEPTH_BITS, 16);
 
     _private->window = glfwCreateWindow(width, height, title, NULL, NULL);
     if (!_private->window)

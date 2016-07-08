@@ -12,7 +12,6 @@ Renderbuffer::Renderbuffer()
 {
     GLuint obj;
     glGenRenderbuffers(1, &obj);
-    PrintGLError("generating renderbuffer");
     
     AssignGLObject(obj, glDeleteRenderbuffers);
 }
@@ -25,7 +24,6 @@ Renderbuffer& Renderbuffer::Bind()
     s_boundRenderbuffer = *this;
 #endif
     glBindRenderbuffer(GL_RENDERBUFFER, *this);
-    PrintGLError("binding renderbuffer");
     return *this;
 }
 
@@ -37,7 +35,6 @@ void Renderbuffer::BindNone()
     s_boundRenderbuffer = 0;
 #endif
     glBindBuffer(GL_RENDERBUFFER, 0);
-    PrintGLError("binding 0 renderbuffer");
 }
 
 Renderbuffer& Renderbuffer::SetStorage(GLenum internalformat, GLsizei width, GLsizei height)
@@ -45,7 +42,6 @@ Renderbuffer& Renderbuffer::SetStorage(GLenum internalformat, GLsizei width, GLs
     GLFK_AUTO_BIND();
     
     glRenderbufferStorage(GL_RENDERBUFFER, internalformat, width, height);
-    PrintGLError("setting storage of renderbuffer");
     
     GLFK_AUTO_UNBIND();
     return *this;

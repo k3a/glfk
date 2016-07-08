@@ -5,6 +5,75 @@ The GNU General Public License v3.0
 #include "Texture.h"
 
 #ifdef GLFK_PREVENT_MULTIPLE_BIND
+unsigned TextureUnit::s_activeUnit = 0;
+#endif
+
+TextureUnit::TextureUnit(unsigned unit)
+: _unit(unit)
+{
+    if (unit < GL_TEXTURE0)
+        unit = GL_TEXTURE0 + unit;
+    
+    _unit = unit - GL_TEXTURE0;
+}
+
+TextureUnit& TextureUnit::Bind()
+{
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
+    if (s_activeUnit == _unit)
+        return *this;
+    s_activeUnit = _unit;
+#endif
+    glActiveTexture(GL_TEXTURE0 + _unit);
+    return *this;
+}
+
+void TextureUnit::BindNone()
+{
+    // set at last unit to allow independent unbinds and binds
+    // without replacing active texture for lower units
+    unsigned unitToSet = Renderer::GetMaxTextureUnits()-1;
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
+    if (s_activeUnit == unitToSet)
+        return;
+    s_activeUnit = unitToSet;
+#endif
+    glActiveTexture(GL_TEXTURE0 + unitToSet);
+}
+
+GLint TextureUnit::GetInt(GLenum target, GLenum pname)
+{
+    GLint out;
+    glGetTexParameteriv(target, pname, &out);
+    return out;
+}
+
+TextureUnit& TextureUnit::SetInt(GLenum target, GLenum pname, GLint value)
+{
+    glTexParameteri(target, pname, value);
+    return *this;
+}
+
+TextureUnit& TextureUnit::SetWrap(GLenum target, WrapMode::E s)
+{
+    return SetInt(target, GL_TEXTURE_WRAP_S, s);
+}
+TextureUnit& TextureUnit::SetWrap(GLenum target, WrapMode::E s, WrapMode::E t)
+{
+    return SetInt(target, GL_TEXTURE_WRAP_S, s).SetInt(target, GL_TEXTURE_WRAP_T, t);
+}
+TextureUnit& TextureUnit::SetWrap(GLenum target, WrapMode::E s, WrapMode::E t, WrapMode::E r)
+{
+    return SetInt(target, GL_TEXTURE_WRAP_S, s).SetInt(target, GL_TEXTURE_WRAP_T, t).SetInt(target, GL_TEXTURE_WRAP_R, r);
+}
+TextureUnit& TextureUnit::SetFilter(GLenum target, MinFilterMode::E minifying, MagFilterMode::E magnifying)
+{
+    return SetInt(target, GL_TEXTURE_MIN_FILTER, minifying).SetInt(target, GL_TEXTURE_MAG_FILTER, magnifying);
+}
+
+//----------------------------------------------------------
+
+#ifdef GLFK_PREVENT_MULTIPLE_BIND
 BaseTexture::TargetTextureMap BaseTexture::s_boundTextureToTarget;
 #endif
 
@@ -12,7 +81,6 @@ BaseTexture::BaseTexture()
 {
     GLuint obj;
     glGenTextures(1, &obj);
-    PrintGLError("generating a texture");
     
     AssignGLObject(obj, glDeleteTextures);
 }
@@ -25,7 +93,6 @@ BaseTexture& BaseTexture::Bind(GLenum target)
     s_boundTextureToTarget[target] = *this;
 #endif
     glBindTexture(target, *this);
-    PrintGLError("binding a texture");
     return *this;
 }
 
@@ -37,107 +104,71 @@ void BaseTexture::BindNone(GLenum target)
     s_boundTextureToTarget[target] = 0;
 #endif
     glBindTexture(target, 0);
-    PrintGLError("binding a texture");
-}
-
-BaseTexture& BaseTexture::SetToUnit(GLenum target, unsigned int unit)
-{
-    if (unit < GL_TEXTURE0)
-        unit = GL_TEXTURE0 + unit;
-    
-    _unit = unit - GL_TEXTURE0;
-    glActiveTexture(unit);
-    PrintGLError("setting an active texture");
-    Bind(target);
-    glActiveTexture(GL_TEXTURE31); // set at last unit to allow unbinds
-    PrintGLError("setting the last active texture");
-    return *this;
 }
 
 BaseTexture& BaseTexture::GenerateMipmap(GLenum target)
 {
     GLFK_AUTO_BIND(target);
     glGenerateMipmap(target);
-    PrintGLError("generating a mipmap");
     GLFK_AUTO_UNBIND(target);
     return *this;
 }
 
-GLint BaseTexture::GetInt(GLenum target, GLenum pname)
-{
-    GLint out;
-    glGetTexParameteriv(target, pname, &out);
-    PrintGLError("getting int v texture param");
-    return out;
-}
+//----------------------------------------------------------
 
-BaseTexture& BaseTexture::SetInt(GLenum target, GLenum pname, GLint value)
+Texture& Texture::SetTextureUnit(TextureUnit unit)
 {
-    glTexParameteri(target, pname, value);
-    PrintGLError("setting int texture param");
+    unit.Bind();
+    
+    glBindTexture(_target, *this); // force-bind
+    
+    // set at last unit to allow independent unbinds and binds
+    // without replacing active texture for lower units
+    unit.Unbind();
+    
+    GLFK_AUTO_UNBIND(); // because of force-bind earlier
     return *this;
 }
 
-BaseTexture& BaseTexture::SetWrap(GLenum target, WrapMode s)
-{
-    return SetInt(target, GL_TEXTURE_WRAP_S, s);
-}
-BaseTexture& BaseTexture::SetWrap(GLenum target, WrapMode s, WrapMode t)
-{
-    return SetInt(target, GL_TEXTURE_WRAP_S, s).SetInt(target, GL_TEXTURE_WRAP_T, t);
-}
-BaseTexture& BaseTexture::SetWrap(GLenum target, WrapMode s, WrapMode t, WrapMode r)
-{
-    return SetInt(target, GL_TEXTURE_WRAP_S, s).SetInt(target, GL_TEXTURE_WRAP_T, t).SetInt(target, GL_TEXTURE_WRAP_R, r);
-}
-BaseTexture& BaseTexture::SetFilter(GLenum target, MinFilterMode minifying, MagFilterMode magnifying)
-{
-    return SetInt(target, GL_TEXTURE_MIN_FILTER, minifying).SetInt(target, GL_TEXTURE_MAG_FILTER, magnifying);
-}
-
-//-----------------------------------------------
+//----------------------------------------------------------
 
 Texture1D& Texture1D::SetImage(GLint level, GLint internalFormat, GLsizei width, GLenum format, GLenum type, const GLvoid * data)
 {
     GLFK_AUTO_BIND();
     glTexImage1D(_target, level, internalFormat, width, 0, format, type, data);
-    PrintGLError("setting 1d texture image");
     GLFK_AUTO_UNBIND();
     return *this;
 }
 
-//-----------------------------------------------
+//----------------------------------------------------------
 
 Texture2D& Texture2D::SetImage(GLint level, GLint internalFormat, GLsizei width, GLsizei height,
                                 GLenum format, GLenum type, const GLvoid * data)
 {
     GLFK_AUTO_BIND();
     glTexImage2D(_target, level, internalFormat, width, height, 0, format, type, data);
-    PrintGLError("setting 2d texture image");
     GLFK_AUTO_UNBIND();
     return *this;
 }
 
-//-----------------------------------------------
+//----------------------------------------------------------
 
 Texture3D& Texture3D::SetImage(GLint level, GLint internalFormat, GLsizei width, GLsizei height,
                     GLsizei depth, GLenum format, GLenum type, const GLvoid * data)
 {
     GLFK_AUTO_BIND();
     glTexImage3D(_target, level, internalFormat, width, height, depth, 0, format, type, data);
-    PrintGLError("setting 3d texture image");
     GLFK_AUTO_UNBIND();
     return *this;
 }
 
-//-----------------------------------------------
+//----------------------------------------------------------
 
-TextureCube& TextureCube::SetImage(CubeFace face, GLint level, GLint internalFormat, GLsizei width, GLsizei height,
+TextureCube& TextureCube::SetImage(CubeFace::E face, GLint level, GLint internalFormat, GLsizei width, GLsizei height,
                                         GLenum format, GLenum type, const GLvoid * data)
 {
     GLFK_AUTO_BIND();
     glTexImage2D(face, level, internalFormat, width, height, 0, format, type, data);
-    PrintGLError("setting 2d image for cubemap");
     GLFK_AUTO_UNBIND();
     return *this;
 }

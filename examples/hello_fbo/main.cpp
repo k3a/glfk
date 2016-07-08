@@ -82,7 +82,7 @@ int main()
     
         ArrayBuffer bv(vao);
         bv.SetData(sizeof(unitSquareVertPos), unitSquareVertPos);
-        bv.SetAttribPointer(prg.GetAttribute("inPos"), 3, ArrayBuffer::FLOAT);
+        bv.SetAttribPointer(prg.GetAttribute("inPos"), 3, AttribType::FLOAT);
         vao.EnableAttribArray(prg.GetAttribute("inPos"));
 
         ElementArrayBuffer bi(vao);
@@ -95,8 +95,8 @@ int main()
     };
     tex.SetImage(0, GL_RGB, 2, 2, GL_RGBA, GL_UNSIGNED_BYTE, texData);
     tex.GenerateMipmap();
-    tex.SetToUnit(0);
-    prg.SetUniformTextureUnit("uTexture", tex.GetUnit());
+    tex.SetTextureUnit(TextureUnit(0));
+    prg.SetUniformTextureUnit("uTexture", tex.GetTextureUnit());
     
     // Framebuffer for offscreen rendering
     Framebuffer fb;
@@ -110,11 +110,11 @@ int main()
         // Texture attachment for rendering color
         Texture2D rt;
         rt.SetEmptyImage(GL_RGBA8, 1024, 1024);
-        rt.SetFilter(BaseTexture::MIN_NEAREST, BaseTexture::MAG_NEAREST); //TODO: needed? try LINEAR too
-        rt.SetToUnit(1);
+        rt.SetTextureUnit(TextureUnit(1));
+        rt.SetFilter(MinFilterMode::NEAREST, MagFilterMode::NEAREST); // when set, mipmaps doesn't need to be generated
         fb.AttachTexture2D(GL_COLOR_ATTACHMENT0, rt, 0);
     
-    if (fb.CheckStatus() != BaseFramebuffer::COMPLETE) {
+    if (fb.CheckStatus() != FramebufferStatus::FRAMEBUFFER_COMPLETE) {
         std::cout << "Incomplete framebuffer" << std::endl;
     }
     
@@ -129,9 +129,9 @@ int main()
         glViewport(0, 0, 1024, 1024); //TODO: needed?
         fb.Clear();
         prg.Use();
-        prg.SetUniformTextureUnit("uTexture", tex.GetUnit());
+        prg.SetUniformTextureUnit("uTexture", tex.GetTextureUnit());
         prg.SetUniformFloat("scale", sinf(time), sinf(time));
-        vao.DrawElements(VertexArray::TRIANGLE_FAN, 4, VertexArray::UNSIGNED_BYTE);
+        vao.DrawElements(DrawMode::TRIANGLE_FAN, 4, IndicesType::UNSIGNED_BYTE);
         
         // draw to window
         fb.Unbind();
@@ -142,9 +142,9 @@ int main()
         prg.Use();
         prg.SetUniformFloat("scale", 1, 1);
         prg.SetUniformFloat("uColor", 0, sinf(time), 1);
-        prg.SetUniformTextureUnit("uTexture", rt.GetUnit());
+        prg.SetUniformTextureUnit("uTexture", rt.GetTextureUnit());
         
-        vao.DrawElements(VertexArray::TRIANGLE_FAN, 4, VertexArray::UNSIGNED_BYTE);
+        vao.DrawElements(DrawMode::TRIANGLE_FAN, 4, IndicesType::UNSIGNED_BYTE);
         
         
         

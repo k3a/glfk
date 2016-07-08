@@ -14,24 +14,12 @@ The GNU General Public License v3.0
 class BaseBuffer : public GLObject
 {
 public:
-    enum Usage {
-        STREAM_DRAW = GL_STREAM_DRAW,
-        STREAM_READ = GL_STREAM_READ,
-        STREAM_COPY = GL_STREAM_COPY,
-        STATIC_DRAW = GL_STATIC_DRAW,
-        STATIC_READ = GL_STATIC_READ,
-        STATIC_COPY = GL_STATIC_COPY,
-        DYNAMIC_DRAW = GL_DYNAMIC_DRAW,
-        DYNAMIC_READ = GL_DYNAMIC_READ,
-        DYNAMIC_COPY = GL_DYNAMIC_COPY
-    };
-    
     BaseBuffer(VertexArray& vao);
 
     BaseBuffer& Bind(GLenum target);
     static void BindNone(GLenum target);
     BaseBuffer& Unbind(GLenum target){ BindNone(target); return *this; };
-    BaseBuffer& SetData(GLenum target, GLsizeiptr size, const GLvoid * data, Usage usage = STATIC_DRAW);
+    BaseBuffer& SetData(GLenum target, GLsizeiptr size, const GLvoid * data, BufferUsage::E usage = BufferUsage::STATIC_DRAW);
 
 private:
 #ifdef GLFK_PREVENT_MULTIPLE_BIND
@@ -48,7 +36,7 @@ public:
     Buffer& Bind() { return (Buffer&)BaseBuffer::Bind(_target); }
     Buffer& Unbind() { return (Buffer&)BaseBuffer::Unbind(_target); }
     
-    Buffer& SetData(GLsizeiptr size, const GLvoid * data, Usage usage = STATIC_DRAW) {
+    Buffer& SetData(GLsizeiptr size, const GLvoid * data, BufferUsage::E usage = BufferUsage::STATIC_DRAW) {
         return (Buffer&)BaseBuffer::SetData(_target, size, data, usage);
     }
 
@@ -59,26 +47,10 @@ protected:
 /// Vertex Buffer Object (VBO) for GL_ARRAY_BUFFER
 class ArrayBuffer : public Buffer
 {
-public:
-    enum AttribType {
-        BYTE = GL_BYTE,
-        UNSIGNED_BYTE = GL_UNSIGNED_BYTE,
-        SHORT = GL_SHORT,
-        UNSIGNED_SHORT = GL_UNSIGNED_SHORT,
-        INT = GL_INT,
-        UNSIGNED_INT = GL_UNSIGNED_INT,
-        HALF_FLOAT = GL_HALF_FLOAT,
-        FLOAT = GL_FLOAT,
-        DOUBLE = GL_DOUBLE,
-        FIXED = GL_FIXED,
-        INT_2_10_10_10_REV = GL_INT_2_10_10_10_REV,
-        UNSIGNED_INT_2_10_10_10_REV = GL_UNSIGNED_INT_2_10_10_10_REV,
-        UNSIGNED_INT_10F_11F_11F_REV = GL_UNSIGNED_INT_10F_11F_11F_REV
-    };
-    
+public:    
     ArrayBuffer(VertexArray& vao) : Buffer(vao, GL_ARRAY_BUFFER) {};
 
-    ArrayBuffer& SetAttribPointer(GLuint index, GLint size, AttribType type, 
+    ArrayBuffer& SetAttribPointer(GLuint index, GLint size, AttribType::E type,
             bool normalized = false, GLsizei stride = 0, const GLvoid * pointer = NULL);
 };
 /// Alias for ArrayBuffer

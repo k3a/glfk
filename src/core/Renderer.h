@@ -28,6 +28,7 @@ The GNU General Public License v3.0
 #include <assert.h>
 
 #include "Utils.h"
+#include "Enums.h"
 
 /// Class encapsulating static functions to general OpenGL commands not bound to any object
 class Renderer
@@ -35,10 +36,13 @@ class Renderer
 public:
     static void Clear(GLbitfield mask = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     static void ClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
-    static void DrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid * indices = NULL);
-    static void DrawArrays(GLenum mode, GLint first, GLsizei count);
+    static void DrawElements(DrawMode::E mode, GLsizei count, IndicesType::E type, const GLvoid * indices = NULL);
+    static void DrawArrays(DrawMode::E mode, GLint first, GLsizei count);
     static GLint GetInt(GLenum pname);
     static const char* GetString(GLenum pname);
+    
+    // helpers
+    static unsigned GetMaxTextureUnits();
 };
 /// Shortcut to Renderer
 typedef Renderer R;
@@ -119,10 +123,8 @@ protected:
 #endif
             if (_del1) {
                 _del1(_obj);
-                PrintGLError("deleting gl object");
             } else if (_del2) {
                 _del2(1, &_obj);
-                PrintGLError("deleting gl object");
             }
             _obj = 0;
             delete _refs;
@@ -159,4 +161,3 @@ private:
 # define GLFK_AUTO_UNBIND(...)
 # define GLFK_AUTO_UNBIND_OBJ(...)
 #endif
-

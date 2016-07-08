@@ -12,7 +12,6 @@ VertexArray::VertexArray()
 {
     GLuint array;
     glGenVertexArrays(1, &array);
-    PrintGLError("creating VAO");
     
     AssignGLObject(array, glDeleteVertexArrays);
 }
@@ -24,8 +23,8 @@ VertexArray& VertexArray::Bind()
         return *this;
     s_boundArray = *this;
 #endif
+    
     glBindVertexArray(*this);
-    PrintGLError("binding VAO");
     return *this;
 }
 void VertexArray::BindNone()
@@ -35,8 +34,8 @@ void VertexArray::BindNone()
         return;
     s_boundArray = 0;
 #endif
+    
     glBindVertexArray(0);
-    PrintGLError("binding 0 VAO");
 }
 
 VertexArray& VertexArray::EnableAttribArray(GLuint index, bool enable)
@@ -47,14 +46,22 @@ VertexArray& VertexArray::EnableAttribArray(GLuint index, bool enable)
     } else { 
         glDisableVertexAttribArray(index);
     }
-    GLFK_AUTO_UNBIND();		
-    PrintGLError("Enabling or disabling vertex attrib array for VAO");
+    GLFK_AUTO_UNBIND();
     return *this;
 }
 
-void VertexArray::DrawElements(DrawMode mode, GLsizei count, IndicesType type, const GLvoid * indices)
+VertexArray& VertexArray::DrawElements(DrawMode::E mode, GLsizei count, IndicesType::E type, const GLvoid * indices)
 {
     GLFK_AUTO_BIND();
     Renderer::DrawElements(mode, count, type, indices);
     GLFK_AUTO_UNBIND();
+    return *this;
+}
+
+VertexArray& VertexArray::DrawArrays(DrawMode::E mode, GLint first, GLsizei count)
+{
+    GLFK_AUTO_BIND();
+    Renderer::DrawArrays(mode, first, count);
+    GLFK_AUTO_UNBIND();
+    return *this;
 }

@@ -16,6 +16,8 @@ public:
     void SwapBuffers();
     void PollEvents();
     bool ShouldClose();
+    
+    static void EnableDebugLog(bool enable);
 
     FramebufferSizeCallback SetFramebufferSizeCallback(FramebufferSizeCallback cb);
     Window::KeyCallback SetKeyCallback(KeyCallback cb);

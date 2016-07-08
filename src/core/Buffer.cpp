@@ -14,7 +14,6 @@ BaseBuffer::BaseBuffer(VertexArray& vao)
     
     GLuint buffer;
     glGenBuffers(1, &buffer);
-    PrintGLError("generating buffer");
     
     AssignGLObject(buffer, glDeleteBuffers);
     
@@ -29,7 +28,6 @@ BaseBuffer& BaseBuffer::Bind(GLenum target)
     s_boundBufferToTarget[target] = *this;
 #endif
     glBindBuffer(target, *this);
-    PrintGLError("binding buffer");
     return *this;
 }
 void BaseBuffer::BindNone(GLenum target)
@@ -40,26 +38,23 @@ void BaseBuffer::BindNone(GLenum target)
     s_boundBufferToTarget[target] = 0;
 #endif
     glBindBuffer(target, 0);
-    PrintGLError("binding 0 buffer");
 }
 
-BaseBuffer& BaseBuffer::SetData(GLenum target, GLsizeiptr size, const GLvoid * data, Usage usage)
+BaseBuffer& BaseBuffer::SetData(GLenum target, GLsizeiptr size, const GLvoid * data, BufferUsage::E usage)
 {
     GLFK_AUTO_BIND(target);
     glBufferData(target, size, data, usage);
-    PrintGLError("setting buffer data");
     GLFK_AUTO_UNBIND(target);
     return *this;
 }
 
 //-------------------------------------------------
 
-ArrayBuffer& ArrayBuffer::SetAttribPointer(GLuint index, GLint size, AttribType type,
+ArrayBuffer& ArrayBuffer::SetAttribPointer(GLuint index, GLint size, AttribType::E type,
         bool normalized, GLsizei stride, const GLvoid * pointer)
 {
     GLFK_AUTO_BIND();
     glVertexAttribPointer(index, size, type, normalized, stride, pointer);
-    PrintGLError("setting vertex attrib pointer");
     GLFK_AUTO_UNBIND();
     return *this;
 }

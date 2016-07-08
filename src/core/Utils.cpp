@@ -59,17 +59,17 @@ void PrintGLErrorImpl(const char* where)
     return;
 #endif
 	
-	static GLenum prevError = 0;
+    static GLenum prevError = 0;
     static const char* prevErrorWhere = NULL;
     GLenum error = glGetError();
     
     if (!error) {
-		return; 
-	} else if (error == prevError && where == prevErrorWhere) {
-		return; // don't display the same error more times
-	}
+        return; 
+    } else if (error == prevError && where == prevErrorWhere) {
+        return; // don't display the same error more times
+    }
     
-	prevError = error;
+    prevError = error;
     prevErrorWhere = where;
     
     printf("GL error during %s: %s\n", where, GLErrorToString(error));
