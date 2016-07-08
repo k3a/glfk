@@ -9,7 +9,7 @@ The GNU General Public License v3.0
 #include "Utils.h"
 
 /// Base Texture
-class BaseTexture : public NoCopy
+class BaseTexture : public GLObject
 {
 public:
     enum WrapMode {
@@ -41,9 +41,7 @@ public:
     };
     
     BaseTexture();
-    ~BaseTexture();
     
-    GLuint GL()const{ return _texture; }
     BaseTexture& Bind(GLenum target);
     static void BindNone(GLenum target);
     BaseTexture& Unbind(GLenum target){ BindNone(target); return *this; };
@@ -58,6 +56,7 @@ public:
     BaseTexture& GenerateMipmap(GLenum target);
     
     // helpers
+    unsigned GetMaxTextureSize(){ return Renderer::GetInt(GL_MAX_TEXTURE_SIZE); };
     BaseTexture& SetWrap(GLenum target, WrapMode s);
     BaseTexture& SetWrap(GLenum target, WrapMode s, WrapMode t);
     BaseTexture& SetWrap(GLenum target, WrapMode s, WrapMode t, WrapMode r);
@@ -70,7 +69,6 @@ private:
     static TargetTextureMap s_boundTextureToTarget;
 #endif
     
-    GLuint _texture;
     unsigned _unit;
 };
 
@@ -80,8 +78,11 @@ class Texture : public BaseTexture
 public:
     Texture(GLenum target) : _target(target) {};
     
-    Texture& Bind();
-    Texture& Unbind();
+    Texture& Bind() { return (Texture&)BaseTexture::Bind(_target); };
+    Texture& Unbind() { return (Texture&)BaseTexture::Unbind(_target); };
+    void BindNone() { BaseTexture::BindNone(_target); }
+    
+    GLenum GetTarget()const{ return _target; };
     GLint GetInt(GLenum pname){ return BaseTexture::GetInt(_target, pname); };
     BaseTexture& SetInt(GLenum pname, GLint value){ return (Texture&)BaseTexture::SetInt(_target, pname, value); };
     
@@ -92,11 +93,11 @@ public:
     Texture& GenerateMipmap(){ return (Texture&)BaseTexture::GenerateMipmap(_target); };
     
     // helpers
-    BaseTexture& SetWrap(GLenum target, WrapMode s){ return (Texture&)BaseTexture::SetWrap(_target, s); };
-    BaseTexture& SetWrap(GLenum target, WrapMode s, WrapMode t){ return (Texture&)BaseTexture::SetWrap(_target, s, t); };
-    BaseTexture& SetWrap(GLenum target, WrapMode s, WrapMode t, WrapMode r){ return (Texture&)BaseTexture::SetWrap(_target, s, t, r); };
+    BaseTexture& SetWrap(WrapMode s){ return (Texture&)BaseTexture::SetWrap(_target, s); };
+    BaseTexture& SetWrap(WrapMode s, WrapMode t){ return (Texture&)BaseTexture::SetWrap(_target, s, t); };
+    BaseTexture& SetWrap(WrapMode s, WrapMode t, WrapMode r){ return (Texture&)BaseTexture::SetWrap(_target, s, t, r); };
     
-    BaseTexture& SetFilter(GLenum target, MinFilterMode minifying, MagFilterMode magnifying){
+    BaseTexture& SetFilter(MinFilterMode minifying, MagFilterMode magnifying){
         return (Texture&)BaseTexture::SetFilter(_target, minifying, magnifying);
     };
     
@@ -116,6 +117,11 @@ public:
     /// \param type Data type of each channel
     Texture1D& SetImage(GLint level, GLint internalFormat, GLsizei width,
                         GLenum format, GLenum type, const GLvoid * data);
+    
+    // helpers
+    Texture1D& SetEmptyImage(GLint internalFormat, GLsizei width, GLenum format/* = GL_RGBA*/) {
+        return SetImage(0, internalFormat, width, format, GL_UNSIGNED_BYTE, NULL);
+    }
 };
 
 /// Texture for GL_TEXTURE_2D
@@ -130,6 +136,11 @@ public:
     /// \param type Data type of each channel
     Texture2D& SetImage(GLint level, GLint internalFormat, GLsizei width, GLsizei height,
                         GLenum format, GLenum type, const GLvoid * data);
+
+    // helpers
+    Texture2D& SetEmptyImage(GLint internalFormat, GLsizei width, GLsizei height) {
+        return SetImage(0, internalFormat, width, height, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    }
 };
 
 /// Texture for GL_TEXTURE_3D
@@ -144,10 +155,15 @@ public:
     /// \param type Data type of each channel
     Texture3D& SetImage(GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth,
                         GLenum format, GLenum type, const GLvoid * data);
+    
+    // helpers
+    Texture3D& SetEmptyImage(GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth) {
+        return SetImage(0, internalFormat, width, height, depth, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    }
 };
 
 /// Texture for GL_TEXTURE_CUBE_MAP
-class TextureCubeMap : public Texture
+class TextureCube : public Texture
 {
 public:
     enum CubeFace {
@@ -159,14 +175,19 @@ public:
         NEGATIVE_Z = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
     };
     
-    TextureCubeMap() : Texture(GL_TEXTURE_CUBE_MAP) {};
+    TextureCube() : Texture(GL_TEXTURE_CUBE_MAP) {};
     
     /// Sets the texture image data
     /// \param internalFormat How to represent the texture in GL
     /// \param format Format of supplied data
     /// \param type Data type of each channel
-    TextureCubeMap& SetImage(CubeFace face, GLint level, GLint internalFormat, GLsizei width, GLsizei height,
+    TextureCube& SetImage(CubeFace face, GLint level, GLint internalFormat, GLsizei width, GLsizei height,
                             GLenum format, GLenum type, const GLvoid * data);
+    
+    // helpers
+    TextureCube& SetEmptyImage(CubeFace face, GLint internalFormat, GLsizei width, GLsizei height) {
+        return SetImage(face, 0, internalFormat, width, height, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    }
 };
 
 

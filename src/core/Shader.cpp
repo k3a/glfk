@@ -176,39 +176,7 @@ Program& Program::SetUniformInt(const Uniform& uniform, int x, int y, int z, int
     return *this;
 }
 
-Program& Program::SetUniform(const Uniform& uniform, float value)
-{
-    GLFK_AUTO_BIND();
-    glUniform1f(uniform, value);
-    PrintGLError("setting float uniform");
-    return *this;
-}
-
-Program& Program::SetUniform(const Uniform& uniform, float x, float y)
-{
-    GLFK_AUTO_BIND();
-    glUniform2f(uniform, x, y);
-    PrintGLError("setting 2 float uniform");
-    return *this;
-}
-
-Program& Program::SetUniform(const Uniform& uniform, float x, float y, float z)
-{
-    GLFK_AUTO_BIND();
-    glUniform3f(uniform, x, y, z);
-    PrintGLError("setting 3 float uniform");
-    return *this;
-}
-
-Program& Program::SetUniform(const Uniform& uniform, float x, float y, float z, float w)
-{
-    GLFK_AUTO_BIND();
-    glUniform4f(uniform, x, y, z, w);
-    PrintGLError("setting 4 float uniform");
-    return *this;
-}
-
-Program& Program::SetUniform(const Uniform& uniform, const int* values, unsigned count)
+Program& Program::SetUniformInt(const Uniform& uniform, const int* values, unsigned count)
 {
     GLFK_AUTO_BIND();
     glUniform1iv(uniform, count, values);
@@ -216,7 +184,39 @@ Program& Program::SetUniform(const Uniform& uniform, const int* values, unsigned
     return *this;
 }
 
-Program& Program::SetUniform(const Uniform& uniform, const float* values, unsigned count)
+Program& Program::SetUniformFloat(const Uniform& uniform, float value)
+{
+    GLFK_AUTO_BIND();
+    glUniform1f(uniform, value);
+    PrintGLError("setting float uniform");
+    return *this;
+}
+
+Program& Program::SetUniformFloat(const Uniform& uniform, float x, float y)
+{
+    GLFK_AUTO_BIND();
+    glUniform2f(uniform, x, y);
+    PrintGLError("setting 2 float uniform");
+    return *this;
+}
+
+Program& Program::SetUniformFloat(const Uniform& uniform, float x, float y, float z)
+{
+    GLFK_AUTO_BIND();
+    glUniform3f(uniform, x, y, z);
+    PrintGLError("setting 3 float uniform");
+    return *this;
+}
+
+Program& Program::SetUniformFloat(const Uniform& uniform, float x, float y, float z, float w)
+{
+    GLFK_AUTO_BIND();
+    glUniform4f(uniform, x, y, z, w);
+    PrintGLError("setting 4 float uniform");
+    return *this;
+}
+
+Program& Program::SetUniformFloat(const Uniform& uniform, const float* values, unsigned count)
 {
     GLFK_AUTO_BIND();
     glUniform1fv(uniform, count, values);
@@ -227,17 +227,17 @@ Program& Program::SetUniform(const Uniform& uniform, const float* values, unsign
 #ifdef GLFK_HAS_GLM
 Program& Program::SetUniform(const Uniform& uniform, const glm::vec2& value)
 {
-    return SetUniform(value.x, value.y);
+    return SetUniformFloat(value.x, value.y);
 }
 
 Program& Program::SetUniform(const Uniform& uniform, const glm::vec3& value)
 {
-    return SetUniform(value.x, value.y, value.z);
+    return SetUniformFloat(value.x, value.y, value.z);
 }
 
 Program& Program::SetUniform(const Uniform& uniform, const glm::vec4& value)
 {
-    return SetUniform(value.x, value.y, value.z, value.w);
+    return SetUniformFloat(value.x, value.y, value.z, value.w);
 }
 
 Program& Program::SetUniform(const Uniform& uniform, const glm::vec2* values, unsigned count)

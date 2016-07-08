@@ -11,6 +11,8 @@ The GNU General Public License v3.0
 #include "core/Buffer.h"
 #include "core/Shader.h"
 #include "core/Texture.h"
+#include "core/Framebuffer.h"
+#include "core/Renderbuffer.h"
 
 static float unitSquareVertPos[] = { 
     -1, 1, 0, // top left
@@ -23,10 +25,11 @@ static unsigned char unitSquareInd[] = {
 };
 
 static const char* vsSrc = GLSL150(
+    uniform vec2 scale;
     in vec3 inPos;
     out vec2 vCoord;
     void main(){
-        gl_Position = vec4(inPos, 1.0);
+        gl_Position = vec4(inPos * vec3(scale, 1), 1.0);
         vCoord = inPos.xy * 0.5 + 0.5;
     }
 );
@@ -58,17 +61,14 @@ int main()
     win.SetFramebufferSizeCallback(resize_cb);
     win.SetKeyCallback(key_cb);
 
-    // vertex shader
     BaseShader vs = VertexShader::FromString(vsSrc);
     if (!vs.Compile()) {
         std::cout << "VS Error: " << vs.GetInfoLog() << std::endl;
     }
-    // fragment shader
     BaseShader fs = FragmentShader::FromString(fsSrc);
     if (!fs.Compile()) {
         std::cout << "FS Error: " << fs.GetInfoLog() << std::endl;
     }
-    // shading program
     Program prg;
     prg.AttachShader(vs).AttachShader(fs);
     if (!prg.Link()) {
@@ -78,21 +78,16 @@ int main()
             << " attrs, " << prg.GetNumActiveUniforms() << " uniforms" << std::endl;
     }
 
-    // vertex array object
     VertexArray vao;
     
-        // vertex buffer
         ArrayBuffer bv(vao);
         bv.SetData(sizeof(unitSquareVertPos), unitSquareVertPos);
         bv.SetAttribPointer(prg.GetAttribute("inPos"), 3, ArrayBuffer::FLOAT);
         vao.EnableAttribArray(prg.GetAttribute("inPos"));
 
-        // index buffer
         ElementArrayBuffer bi(vao);
         bi.SetData(sizeof(unitSquareInd), unitSquareInd);
-        
     
-    // 2D texture
     Texture2D tex;
     unsigned char texData[] = {
         255, 0, 0, 255,  0, 255, 0, 255,
@@ -101,27 +96,58 @@ int main()
     tex.SetImage(0, GL_RGB, 2, 2, GL_RGBA, GL_UNSIGNED_BYTE, texData);
     tex.GenerateMipmap();
     tex.SetToUnit(0);
-    
-    // set texture to program uniform
     prg.SetUniformTextureUnit("uTexture", tex.GetUnit());
     
-    // specify clear color
-    R::ClearColor(0,1,1,0);
+    // Framebuffer for offscreen rendering
+    Framebuffer fb;
+    std::cout << "Max color attachments: " << fb.GetMaxColorAttachments() << std::endl;
     
+        // Renderbuffer for storing depth
+        Renderbuffer rb;
+        rb.SetStorage(GL_DEPTH_COMPONENT, 1024, 1024);
+        fb.AttachRenderbuffer(GL_DEPTH_ATTACHMENT, rb);
+    
+        // Texture attachment for rendering color
+        Texture2D rt;
+        rt.SetEmptyImage(GL_RGBA8, 1024, 1024);
+        rt.SetFilter(BaseTexture::MIN_NEAREST, BaseTexture::MAG_NEAREST); //TODO: needed? try LINEAR too
+        rt.SetToUnit(1);
+        fb.AttachTexture2D(GL_COLOR_ATTACHMENT0, rt, 0);
+    
+    if (fb.CheckStatus() != BaseFramebuffer::COMPLETE) {
+        std::cout << "Incomplete framebuffer" << std::endl;
+    }
+    
+    R::ClearColor(0,1,1,0);
     float time = 0;
+    
     while(!win.ShouldClose()) {
         time += 0.01;
-        // clear the buffer
-        R::Clear();
-
-        // use and set the uniform of a program
-        prg.Use();
-        prg.SetUniformFloat("uColor", 0, sinf(time), 1);
         
-        // draw elements of VAO
+        // draw to FB
+        fb.Bind();
+        glViewport(0, 0, 1024, 1024); //TODO: needed?
+        fb.Clear();
+        prg.Use();
+        prg.SetUniformTextureUnit("uTexture", tex.GetUnit());
+        prg.SetUniformFloat("scale", sinf(time), sinf(time));
         vao.DrawElements(VertexArray::TRIANGLE_FAN, 4, VertexArray::UNSIGNED_BYTE);
         
-        // swap buffes and poll events
+        // draw to window
+        fb.Unbind();
+        //rt.GenerateMipmap();
+        
+        R::Clear();
+
+        prg.Use();
+        prg.SetUniformFloat("scale", 1, 1);
+        prg.SetUniformFloat("uColor", 0, sinf(time), 1);
+        prg.SetUniformTextureUnit("uTexture", rt.GetUnit());
+        
+        vao.DrawElements(VertexArray::TRIANGLE_FAN, 4, VertexArray::UNSIGNED_BYTE);
+        
+        
+        
         win.EndFrame();
     }
 

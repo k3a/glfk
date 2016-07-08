@@ -9,6 +9,9 @@ The GNU General Public License v3.0
 /// Read the whole file into a string
 std::string ReadFile(const char* path);
 
+/// Convert GL error code to stirng
+const char* GLErrorToString(unsigned error);
+
 #ifdef DEBUG
 /// Check for GL error and print it
 # define PrintGLError(where) PrintGLErrorImpl(where " (" __FILE__ ")")

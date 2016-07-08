@@ -25,8 +25,7 @@ int main()
     while(!win.ShouldClose()) {
         R::Clear();
 
-        win.SwapBuffers();
-        win.PollEvents();
+        win.EndFrame();
     }
 
     return 0;

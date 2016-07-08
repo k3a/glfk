@@ -30,4 +30,12 @@ Divided into Core and Extra.
 - Every class must be documented with a short description of purpose of the class
 - Documentation is required only for parts which looks confusing or worse readable
 - Methods generally don't need to be documented unless it is not clear what they does
-- No exceptions
+- Don't make or throw any C++ exceptions
+- Use `std::string` only when you need to store a string in a string object. For example don't use it when GL returns `const char*`.
+
+## TODO ##
+
+- New features of GL 3.x+ like multisample alternatives (glRenderbufferStorageMultisample)
+- handle proxy textures somehow
+
+

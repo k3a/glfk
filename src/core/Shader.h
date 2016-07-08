@@ -30,24 +30,90 @@ private:
 class VertexShader : public BaseShader
 {
 public:
-    static BaseShader FromString(std::string src) {
-        return BaseShader(GL_VERTEX_SHADER).SetSource(src);
-    };
-    static BaseShader FromFile(const char* path){
+    VertexShader() : BaseShader(GL_VERTEX_SHADER) {};
+    
+    static VertexShader FromString(std::string src) {
+        return (VertexShader&)VertexShader().SetSource(src);
+    }
+    
+    static VertexShader FromFile(const char* path){
         return FromString(ReadFile(path));
-    };
+    }
 };
 
 /// Program object of type GL_FRAGMENT_SHADER
 class FragmentShader : public BaseShader
 {
 public:
-    static BaseShader FromString(std::string src) {
-        return BaseShader(GL_FRAGMENT_SHADER).SetSource(src);
-    };
-    static BaseShader FromFile(const char* path){
+    FragmentShader() : BaseShader(GL_FRAGMENT_SHADER) {};
+    
+    static FragmentShader FromString(std::string src) {
+        return (FragmentShader&)FragmentShader().SetSource(src);
+    }
+    
+    static FragmentShader FromFile(const char* path){
         return FromString(ReadFile(path));
-    };
+    }
+};
+
+/// Program object of type GL_COMPUTE_SHADER
+class ComputeShader : public BaseShader
+{
+public:
+    ComputeShader() : BaseShader(GL_COMPUTE_SHADER) {};
+    
+    static ComputeShader FromString(std::string src) {
+        return (ComputeShader&)ComputeShader().SetSource(src);
+    }
+    
+    static ComputeShader FromFile(const char* path){
+        return FromString(ReadFile(path));
+    }
+};
+
+/// Program object of type GL_GEOMETRY_SHADER
+class GeometryShader : public BaseShader
+{
+public:
+    GeometryShader() : BaseShader(GL_GEOMETRY_SHADER) {};
+    
+    static GeometryShader FromString(std::string src) {
+        return (GeometryShader&)GeometryShader().SetSource(src);
+    }
+    
+    static GeometryShader FromFile(const char* path){
+        return FromString(ReadFile(path));
+    }
+};
+
+/// Program object of type GL_TESS_EVALUATION_SHADER
+class TessEvaluationShader : public BaseShader
+{
+public:
+    TessEvaluationShader() : BaseShader(GL_TESS_EVALUATION_SHADER) {};
+    
+    static TessEvaluationShader FromString(std::string src) {
+        return (TessEvaluationShader&)TessEvaluationShader().SetSource(src);
+    }
+    
+    static TessEvaluationShader FromFile(const char* path){
+        return FromString(ReadFile(path));
+    }
+};
+
+/// Program object of type GL_TESS_CONTROL_SHADER
+class TessControlShader : public BaseShader
+{
+public:
+    TessControlShader() : BaseShader(GL_TESS_CONTROL_SHADER) {};
+    
+    static TessControlShader FromString(std::string src) {
+        return (TessControlShader&)TessControlShader().SetSource(src);
+    }
+    
+    static TessControlShader FromFile(const char* path){
+        return FromString(ReadFile(path));
+    }
 };
 
 typedef GLint Attribute;
@@ -85,49 +151,37 @@ public:
         return SetUniformTextureUnit(GetUniform(name), value);
     }
     
-    template <typename T>
-    Program& SetUniformInt(const std::string& name, const T& x, const T& y)
+    template <typename T, typename U>
+    Program& SetUniformInt(const std::string& name, const T& x, const U& y)
     {
         return SetUniformInt(GetUniform(name), x, y);
     }
-    template <typename T>
-    Program& SetUniform(const std::string& name, const T& x, const T& y)
+    template <typename T, typename U>
+    Program& SetUniformFloat(const std::string& name, const T& x, const U& y)
     {
-        return SetUniform(GetUniform(name), x, y);
-    }
-    Program& SetUniform(const std::string& name, double x, double y)
-    {
-        return SetUniform(GetUniform(name), (float)x, (float)y);
+        return SetUniformFloat(GetUniform(name), (float)x, (float)y);
     }
     
-    template <typename T>
-    Program& SetUniformInt(const std::string& name, const T& x, const T& y, const T& z)
+    template <typename T, typename U, typename V>
+    Program& SetUniformInt(const std::string& name, const T& x, const U& y, const V& z)
     {
         return SetUniformInt(GetUniform(name), x, y, z);
     }
-    template <typename T>
-    Program& SetUniform(const std::string& name, const T& x, const T& y, const T& z)
+    template <typename T, typename U, typename V>
+    Program& SetUniformFloat(const std::string& name, const T& x, const U& y, const V& z)
     {
-        return SetUniform(GetUniform(name), x, y, z);
-    }
-    Program& SetUniform(const std::string& name, double x, double y, double z)
-    {
-        return SetUniform(GetUniform(name), (float)x, (float)y, (float)z);
+        return SetUniformFloat(GetUniform(name), (float)x, (float)y, (float)z);
     }
     
-    template <typename T>
-    Program& SetUniformInt(const std::string& name, const T& x, const T& y, const T& z, const T& w)
+    template <typename T, typename U, typename V, typename W>
+    Program& SetUniformInt(const std::string& name, const T& x, const U& y, const V& z, const W& w)
     {
         return SetUniformInt(GetUniform(name), x, y, z, w);
     }
-    template <typename T>
-    Program& SetUniform(const std::string& name, const T& x, const T& y, const T& z, const T& w)
+    template <typename T, typename U, typename V, typename W>
+    Program& SetUniformFloat(const std::string& name, const T& x, const U& y, const V& z, const W& w)
     {
-        return SetUniform(GetUniform(name), x, y, z, w);
-    }
-    Program& SetUniform(const std::string& name, double x, double y, double z, double w)
-    {
-        return SetUniform(GetUniform(name), (float)x, (float)y, (float)z, (float)w);
+        return SetUniformFloat(GetUniform(name), (float)x, (float)y, (float)z, (float)w);
     }
     
     template <typename T>
@@ -141,12 +195,12 @@ public:
     Program& SetUniformInt(const Uniform& uniform, int x, int y);
     Program& SetUniformInt(const Uniform& uniform, int x, int y, int z);
     Program& SetUniformInt(const Uniform& uniform, int x, int y, int z, int w);
-    Program& SetUniform(const Uniform& uniform, float value);
-    Program& SetUniform(const Uniform& uniform, float x, float y);
-    Program& SetUniform(const Uniform& uniform, float x, float y, float z);
-    Program& SetUniform(const Uniform& uniform, float x, float y, float z, float w);
-    Program& SetUniform(const Uniform& uniform, const int* values, unsigned count);
-    Program& SetUniform(const Uniform& uniform, const float* values, unsigned count);
+    Program& SetUniformInt(const Uniform& uniform, const int* values, unsigned count);
+    Program& SetUniformFloat(const Uniform& uniform, float value);
+    Program& SetUniformFloat(const Uniform& uniform, float x, float y);
+    Program& SetUniformFloat(const Uniform& uniform, float x, float y, float z);
+    Program& SetUniformFloat(const Uniform& uniform, float x, float y, float z, float w);
+    Program& SetUniformFloat(const Uniform& uniform, const float* values, unsigned count);
     
 #ifdef GLFK_HAS_GLM
     Program& SetUniform(const Uniform& uniform, const glm::vec2& value);
@@ -171,4 +225,5 @@ private:
     bool _valid;
 };
 
+#define GLSL150(x) "#version 150\n" #x 
 

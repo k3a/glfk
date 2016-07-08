@@ -5,7 +5,7 @@ The GNU General Public License v3.0
 #pragma once
 
 // include opengl headers
-#include <glad/glad.h>
+#include <glad.h>
 #ifdef GLFK_HAS_GLFW
 //# define GLFW_INCLUDE_GLCOREARB // make sure to include gl3 core header
 # include <GLFW/glfw3.h>
@@ -32,11 +32,13 @@ The GNU General Public License v3.0
 /// Class encapsulating static functions to general OpenGL commands not bound to any object
 class Renderer
 {
-    public:
-        static void Clear(GLbitfield mask = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        static void ClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
-        static void DrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid * indices = NULL);
-        static void DrawArrays(GLenum mode, GLint first, GLsizei count);
+public:
+    static void Clear(GLbitfield mask = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    static void ClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
+    static void DrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid * indices = NULL);
+    static void DrawArrays(GLenum mode, GLint first, GLsizei count);
+    static GLint GetInt(GLenum pname);
+    static const char* GetString(GLenum pname);
 };
 /// Shortcut to Renderer
 typedef Renderer R;
@@ -105,8 +107,6 @@ protected:
         return *this;
     }
     
-    operator GLuint()const{ return _obj; }
-    
     /// Retain this object, incrementing reference count
     GLObject& Retain(){ ++*_refs; return *this; };
     
@@ -115,7 +115,7 @@ protected:
         assert(*_refs > 0); // attempt to release a released object
         if (*_refs == 1) {
 #ifdef GLFK_DEBUG_REF_COUNTING
-            printf("%p: deleting obj %u\n", this, _obj);
+            printf("%p: deleting obj %u using %p or %p\n", this, _obj, _del1, _del2);
 #endif
             if (_del1) {
                 _del1(_obj);
@@ -126,10 +126,16 @@ protected:
             }
             _obj = 0;
             delete _refs;
+            return *this;
         }
         --*_refs;
         return *this;
     };
+    
+public:
+    
+    /// Returns the stored GL object 
+    operator GLuint()const{ return _obj; }
     
     /// Returns current reference count
     unsigned RefCount()const{ return *_refs; };

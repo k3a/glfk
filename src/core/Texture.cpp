@@ -10,24 +10,21 @@ BaseTexture::TargetTextureMap BaseTexture::s_boundTextureToTarget;
 
 BaseTexture::BaseTexture()
 {
-    glGenTextures(1, &_texture);
+    GLuint obj;
+    glGenTextures(1, &obj);
     PrintGLError("generating a texture");
-}
-
-BaseTexture::~BaseTexture()
-{
-    glDeleteTextures(1, &_texture);
-    PrintGLError("deleting a texture");
+    
+    AssignGLObject(obj, glDeleteTextures);
 }
 
 BaseTexture& BaseTexture::Bind(GLenum target)
 {
 #ifdef GLFK_PREVENT_MULTIPLE_BIND
-    if (s_boundTextureToTarget[target] == _texture)
+    if (s_boundTextureToTarget[target] == *this)
         return *this;
-    s_boundTextureToTarget[target] = _texture;
+    s_boundTextureToTarget[target] = *this;
 #endif
-    glBindTexture(target, _texture);
+    glBindTexture(target, *this);
     PrintGLError("binding a texture");
     return *this;
 }
@@ -99,17 +96,6 @@ BaseTexture& BaseTexture::SetFilter(GLenum target, MinFilterMode minifying, MagF
 }
 
 //-----------------------------------------------
-Texture& Texture::Bind()
-{
-    return (Texture&)BaseTexture::Bind(_target);
-}
-Texture& Texture::Unbind()
-{
-    BaseTexture::BindNone(_target);
-    return *this;
-}
-
-//-----------------------------------------------
 
 Texture1D& Texture1D::SetImage(GLint level, GLint internalFormat, GLsizei width, GLenum format, GLenum type, const GLvoid * data)
 {
@@ -146,7 +132,7 @@ Texture3D& Texture3D::SetImage(GLint level, GLint internalFormat, GLsizei width,
 
 //-----------------------------------------------
 
-TextureCubeMap& TextureCubeMap::SetImage(CubeFace face, GLint level, GLint internalFormat, GLsizei width, GLsizei height,
+TextureCube& TextureCube::SetImage(CubeFace face, GLint level, GLint internalFormat, GLsizei width, GLsizei height,
                                         GLenum format, GLenum type, const GLvoid * data)
 {
     GLFK_AUTO_BIND();

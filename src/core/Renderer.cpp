@@ -20,8 +20,24 @@ void Renderer::DrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoi
     PrintGLError("drawing elements");
 }
 
-void DrawArrays(GLenum mode, GLint first, GLsizei count)
+void Renderer::DrawArrays(GLenum mode, GLint first, GLsizei count)
 {
     glDrawArrays(mode, first, count);
     PrintGLError("drawing arrays");
+}
+
+GLint Renderer::GetInt(GLenum pname)
+{
+    GLint val;
+    glGetIntegerv(pname, &val);
+    PrintGLError("getting int val");
+    return val;
+}
+
+const char* Renderer::GetString(GLenum pname)
+{
+    const char* val;
+    val = (const char*)glGetString(pname);
+    PrintGLError("getting string val");
+    return val;
 }

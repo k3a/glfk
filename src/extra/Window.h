@@ -19,6 +19,9 @@ public:
 
     FramebufferSizeCallback SetFramebufferSizeCallback(FramebufferSizeCallback cb);
     Window::KeyCallback SetKeyCallback(KeyCallback cb);
+    
+    // helpers
+    Window& EndFrame(){ SwapBuffers(); PollEvents(); return *this; };
 
 private:
     struct sPrivate;

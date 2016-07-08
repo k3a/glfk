@@ -5,8 +5,7 @@ The GNU General Public License v3.0
 #include "extra/Window.h"
 
 #include <stdio.h>
-
-#include <glad/glad.h>
+#include <glad.h>
 
 #define GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED // GLAD simulates gl.h
 //# define GLFW_INCLUDE_GLCOREARB // make sure to include gl3 core header
@@ -16,6 +15,33 @@ static void glfw_error_cb(int err, const char * desc)
 {
     printf("ERR: GLFW error %d - %s\n", err, desc);
 }
+
+#ifdef GLAD_DEBUG
+# include <stdarg.h>
+# include "../gldebug.h"
+# include "core/Utils.h"
+void glad_post_cb(const char *name, void *funcptr, int len_args, ...) {
+    va_list vl;
+    
+    if (!strcmp(name, "glGetError")) {
+        return; // don't track glGetError
+    }
+    
+    printf("> %s(", name);
+    va_start(vl, len_args);
+    for (int i=0; i<len_args; i++) {
+        unsigned arg = va_arg(vl, unsigned);
+        printf("%s%s", (i>0)?", ":"", GLEnumToString(arg));
+    }
+    va_end(vl);
+    printf(")\n");
+    
+    GLenum err = glad_glGetError();
+    if (err != GL_NO_ERROR) {
+        printf("GL Error 0x%X : %s", err, GLErrorToString(err));
+    }
+}
+#endif
 
 struct Window::sPrivate {
     sPrivate() 
@@ -102,6 +128,11 @@ bool Window::Create(unsigned width, unsigned height, const char* title)
 
     // clear gl errors
     glGetError();
+    
+#ifdef GLAD_DEBUG
+    // set post-call GLAD callback
+    glad_set_post_callback(glad_post_cb);
+#endif
 
     return true;
 }

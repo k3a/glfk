@@ -44,10 +44,13 @@ private:
 class Buffer : public BaseBuffer
 {
 public:
-    Buffer(VertexArray& vao, GLenum target);
-    Buffer& Bind();
-    Buffer& Unbind();
-    Buffer& SetData(GLsizeiptr size, const GLvoid * data, Usage usage = STATIC_DRAW);
+    Buffer(VertexArray& vao, GLenum target) : BaseBuffer(vao), _target(target) { }
+    Buffer& Bind() { return (Buffer&)BaseBuffer::Bind(_target); }
+    Buffer& Unbind() { return (Buffer&)BaseBuffer::Unbind(_target); }
+    
+    Buffer& SetData(GLsizeiptr size, const GLvoid * data, Usage usage = STATIC_DRAW) {
+        return (Buffer&)BaseBuffer::SetData(_target, size, data, usage);
+    }
 
 protected:
     GLenum _target;	

@@ -52,31 +52,6 @@ BaseBuffer& BaseBuffer::SetData(GLenum target, GLsizeiptr size, const GLvoid * d
     return *this;
 }
 
-//--------------------------------------------------
-
-Buffer::Buffer(VertexArray& vao, GLenum target)
-: BaseBuffer(vao), _target(target)
-{
-}
-
-Buffer& Buffer::Bind()
-{
-    BaseBuffer::Bind(_target);
-    return *this;
-}
-
-Buffer& Buffer::Unbind()
-{
-    BaseBuffer::Unbind(_target);
-    return *this;
-}
-
-Buffer& Buffer::SetData(GLsizeiptr size, const GLvoid * data, Usage usage)
-{
-    BaseBuffer::SetData(_target, size, data, usage);
-    return *this;
-}
-
 //-------------------------------------------------
 
 ArrayBuffer& ArrayBuffer::SetAttribPointer(GLuint index, GLint size, AttribType type,

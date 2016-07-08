@@ -22,6 +22,7 @@ list(APPEND GLFK_DEP_DEFINES GLFK_HAS_GLM)
 
 add_subdirectory(glad)
 list(APPEND GLFK_DEP_LIBS glad)
+list(APPEND GLFK_DEP_INCLUDES ${GLAD_INCLUDES})
 
 # --------------------------------------------
 # propagate to parent
