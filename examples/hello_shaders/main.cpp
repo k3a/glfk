@@ -62,12 +62,12 @@ int main()
     win.SetKeyCallback(key_cb);
 
     // vertex shader
-    BaseShader vs = VertexShader::FromString(vsSrc);
+    BaseShader vs = VertexShader(vsSrc);
     if (!vs.Compile()) {
         std::cout << "VS Error: " << vs.GetInfoLog() << std::endl;
     }
     // fragment shader
-    BaseShader fs = FragmentShader::FromString(fsSrc);
+    BaseShader fs = FragmentShader(fsSrc);
     if (!fs.Compile()) {
         std::cout << "FS Error: " << fs.GetInfoLog() << std::endl;
     }
@@ -79,6 +79,16 @@ int main()
     } else {
         std::cout << "Prog Compiled OK: " << prg.GetNumActiveAttributes()
             << " attrs, " << prg.GetNumActiveUniforms() << " uniforms" << std::endl;
+        
+        for(int i=0; i<prg.GetNumActiveAttributes(); i++) {
+            AttributeInfo inf = prg.GetAttributeInfo(i);
+            std::cout << " - attribute " << inf.name << ", type " << inf.type << ", size " << inf.size << std::endl;
+        }
+        
+        for(int i=0; i<prg.GetNumActiveUniforms(); i++) {
+            UniformInfo inf = prg.GetUniformInfo(i);
+            std::cout << " - uniform " << inf.name << ", type " << inf.type << ", size " << inf.size << std::endl;
+        }
     }
 
     // vertex array object

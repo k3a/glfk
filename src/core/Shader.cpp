@@ -14,6 +14,12 @@ BaseShader::BaseShader(GLenum shaderType)
 {
     AssignGLObject(glCreateShader(shaderType), glDeleteShader);
 }
+BaseShader::BaseShader(GLenum shaderType, std::string source)
+: _valid(false)
+{
+    AssignGLObject(glCreateShader(shaderType), glDeleteShader);
+    SetSource(source);
+}
 BaseShader& BaseShader::SetSource(std::string str)
 {
     if (str.length() == 0) 
@@ -125,10 +131,42 @@ Attribute Program::GetAttribute(const std::string& name)
     return out;
 }
 
+AttributeInfo Program::GetAttributeInfo(const Attribute &a)
+{
+    char buff[256];
+    GLsizei len = sizeof(buff);
+    AttributeInfo i;
+    
+    glGetActiveAttrib(*this, a, len, &len, &i.size, (GLenum*)&i.type, buff);
+    i.name = buff;
+    
+    return i;
+}
+
 Uniform Program::GetUniform(const std::string& name)
 {
     Uniform out = glGetUniformLocation(*this, name.c_str());
     return out;
+}
+
+std::string Program::GetUniformName(const Uniform &u)
+{
+    char buff[256];
+    GLsizei len = sizeof(buff);
+    glGetActiveUniformName(*this, u, len, &len, buff);
+    return buff;
+}
+
+UniformInfo Program::GetUniformInfo(const Uniform& u)
+{
+    char buff[256];
+    GLsizei len = sizeof(buff);
+    UniformInfo i;
+    
+    glGetActiveUniform(*this, u, len, &len, &i.size, (GLenum*)&i.type, buff);
+    i.name = buff;
+    
+    return i;
 }
 
 Program& Program::SetUniformInt(const Uniform& uniform, int value)

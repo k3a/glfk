@@ -74,6 +74,10 @@ public:
         return (FramebufferWithTarget&)BaseFramebuffer::AttachTexture3D(_target, attachment, texture, level, layer);
     }
     
+    /// Read data from framebuffer
+    FramebufferWithTarget& ReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, PixelCopyDataFormat::E format,
+                                      PixelDataType::E type, GLvoid * data);
+    
     // helpers
     FramebufferWithTarget& Clear(GLbitfield mask = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT){
         return (FramebufferWithTarget&)BaseFramebuffer::Clear(_target, mask);

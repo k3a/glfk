@@ -68,11 +68,11 @@ int main()
     win.SetFramebufferSizeCallback(resize_cb);
     win.SetKeyCallback(key_cb);
 
-    BaseShader vs = VertexShader::FromString(vsSrc);
+    BaseShader vs = VertexShader(vsSrc);
     if (!vs.Compile()) {
         std::cout << "VS Error: " << vs.GetInfoLog() << std::endl;
     }
-    BaseShader fs = FragmentShader::FromString(fsSrc);
+    BaseShader fs = FragmentShader(fsSrc);
     if (!fs.Compile()) {
         std::cout << "FS Error: " << fs.GetInfoLog() << std::endl;
     }

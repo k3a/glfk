@@ -15,6 +15,7 @@ class BaseShader : public GLObject
 
 public:
     BaseShader(GLenum shaderType);
+    BaseShader(GLenum shaderType, std::string source);
     void DeleteGLObject(GLuint obj);
 
     bool Compile();
@@ -31,13 +32,10 @@ class VertexShader : public BaseShader
 {
 public:
     VertexShader() : BaseShader(GL_VERTEX_SHADER) {};
-    
-    static VertexShader FromString(std::string src) {
-        return (VertexShader&)VertexShader().SetSource(src);
-    }
+    VertexShader(std::string source) : BaseShader(GL_VERTEX_SHADER, source) {};
     
     static VertexShader FromFile(const char* path){
-        return FromString(ReadFile(path));
+        return VertexShader(ReadFile(path));
     }
 };
 
@@ -46,13 +44,10 @@ class FragmentShader : public BaseShader
 {
 public:
     FragmentShader() : BaseShader(GL_FRAGMENT_SHADER) {};
-    
-    static FragmentShader FromString(std::string src) {
-        return (FragmentShader&)FragmentShader().SetSource(src);
-    }
+    FragmentShader(std::string source) : BaseShader(GL_FRAGMENT_SHADER, source) {};
     
     static FragmentShader FromFile(const char* path){
-        return FromString(ReadFile(path));
+        return FragmentShader(ReadFile(path));
     }
 };
 
@@ -61,13 +56,10 @@ class ComputeShader : public BaseShader
 {
 public:
     ComputeShader() : BaseShader(GL_COMPUTE_SHADER) {};
-    
-    static ComputeShader FromString(std::string src) {
-        return (ComputeShader&)ComputeShader().SetSource(src);
-    }
+    ComputeShader(std::string source) : BaseShader(GL_COMPUTE_SHADER, source) {};
     
     static ComputeShader FromFile(const char* path){
-        return FromString(ReadFile(path));
+        return ComputeShader(ReadFile(path));
     }
 };
 
@@ -76,13 +68,10 @@ class GeometryShader : public BaseShader
 {
 public:
     GeometryShader() : BaseShader(GL_GEOMETRY_SHADER) {};
-    
-    static GeometryShader FromString(std::string src) {
-        return (GeometryShader&)GeometryShader().SetSource(src);
-    }
+    GeometryShader(std::string source) : BaseShader(GL_GEOMETRY_SHADER, source) {};
     
     static GeometryShader FromFile(const char* path){
-        return FromString(ReadFile(path));
+        return GeometryShader(ReadFile(path));
     }
 };
 
@@ -91,13 +80,10 @@ class TessEvaluationShader : public BaseShader
 {
 public:
     TessEvaluationShader() : BaseShader(GL_TESS_EVALUATION_SHADER) {};
-    
-    static TessEvaluationShader FromString(std::string src) {
-        return (TessEvaluationShader&)TessEvaluationShader().SetSource(src);
-    }
+    TessEvaluationShader(std::string source) : BaseShader(GL_TESS_EVALUATION_SHADER, source) {};
     
     static TessEvaluationShader FromFile(const char* path){
-        return FromString(ReadFile(path));
+        return TessEvaluationShader(ReadFile(path));
     }
 };
 
@@ -106,18 +92,26 @@ class TessControlShader : public BaseShader
 {
 public:
     TessControlShader() : BaseShader(GL_TESS_CONTROL_SHADER) {};
-    
-    static TessControlShader FromString(std::string src) {
-        return (TessControlShader&)TessControlShader().SetSource(src);
-    }
+    TessControlShader(std::string source) : BaseShader(GL_TESS_CONTROL_SHADER, source) {};
     
     static TessControlShader FromFile(const char* path){
-        return FromString(ReadFile(path));
+        return TessControlShader(ReadFile(path));
     }
 };
 
 typedef GLint Attribute;
 typedef GLint Uniform;
+
+struct UniformInfo {
+    std::string name;
+    ShaderUniformType::E type;
+    GLint size;
+};
+struct AttributeInfo {
+    std::string name;
+    ShaderAttribType::E type;
+    GLint size;
+};
 
 /// Program Object
 class Program : public GLObject
@@ -137,7 +131,11 @@ public:
     GLint GetInt(GLenum pname)const;
     
     Attribute GetAttribute(const std::string& name);
+    AttributeInfo GetAttributeInfo(const Attribute& a);
+    
     Uniform GetUniform(const std::string& name);
+    std::string GetUniformName(const Uniform& u);
+    UniformInfo GetUniformInfo(const Uniform& u);
     
     template <typename T>
     Program& SetUniform(const std::string& name, const T& value)

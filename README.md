@@ -32,7 +32,7 @@ The code is divided into Core and Extra sections.
 - Documentation is required only for parts which looks confusing or are not well readable
 - Methods generally don't need to be documented unless it is not clear what they do
 - Don't make or throw any C++ exceptions!
-- Use `std::string` only when you need to store a string in a string object. For example don't use it when GL returns `const char*`.
+- Use `std::string` only when you need to store a volatile char* in a string object. For example don't use it when GL returns static `const char*`.
 - Enums in Enums.h must represent GL constants
 
 ## How to Help ##
