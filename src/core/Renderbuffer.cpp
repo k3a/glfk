@@ -37,7 +37,7 @@ void Renderbuffer::BindNone()
     glBindBuffer(GL_RENDERBUFFER, 0);
 }
 
-Renderbuffer& Renderbuffer::SetStorage(GLenum internalformat, GLsizei width, GLsizei height)
+Renderbuffer& Renderbuffer::SetStorage(InternalFormat::E internalformat, GLsizei width, GLsizei height)
 {
     GLFK_AUTO_BIND();
     

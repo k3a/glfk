@@ -14,12 +14,15 @@ The GNU General Public License v3.0
 
 static float unitSquareVertPos[] = { 
     -1, 1, 0, // top left
-    -1, -1, 0, // bottom left
     1, -1, 0, // bottom right
+    -1, -1, 0, // bottom left
     1, 1, 0 // top right
 };
+
+// this sample also demonstrates use of index buffer
+// second and third vertex was swapped in unitSquareVertPos
 static unsigned char unitSquareInd[] = {
-    0, 1, 2, 3
+    0, 2, 1, 3
 };
 
 static const char* vsSrc = GLSL150(
@@ -98,7 +101,7 @@ int main()
         255, 0, 0, 255,  0, 255, 0, 255,
         0, 0, 255, 255,  255, 255, 0, 255
     };
-    tex.SetImage(0, GL_RGB, 2, 2, GL_RGBA, GL_UNSIGNED_BYTE, texData);
+    tex.SetImage(0, InternalFormat::RGB, 2, 2, GL_RGBA, GL_UNSIGNED_BYTE, texData);
     tex.GenerateMipmap();
     tex.SetTextureUnit(TextureUnit(0));
     

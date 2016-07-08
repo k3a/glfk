@@ -16,8 +16,11 @@ const char* GLErrorToString(unsigned error);
 /// Check for GL error and print it
 # define PrintGLError(where) PrintGLErrorImpl(where " (" __FILE__ ")")
 void PrintGLErrorImpl(const char* where);
+# include <signal.h>
+# define DebugBreak() raise(SIGSTOP)
 #else
 # define PrintGLError(where)
+# define DebugBreak()
 #endif
 
 /// For marking classes as non-copyable.

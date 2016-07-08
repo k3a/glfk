@@ -46,6 +46,7 @@ void glad_post_cb(const char *name, void *funcptr, int len_args, ...) {
     GLenum err = glad_glGetError();
     if (err != GL_NO_ERROR) {
         printf("GL Error 0x%X : %s\n", err, GLErrorToString(err));
+        DebugBreak();
     }
 }
 void Window::EnableDebugLog(bool enable)

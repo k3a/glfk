@@ -10,7 +10,6 @@ The GNU General Public License v3.0
 
 /// Texture Unit
 /// Device supports several texture units (actually Renderer::GetMaxTextureUnits) counted from 0.
-/// TextureUnit for unber one specifies GL_TEXTURE0.
 class TextureUnit
 {
     friend class Texture;
@@ -18,12 +17,23 @@ private:
     TextureUnit() : _unit(0) {};
     
 public:
+    /** Create an object representing texture unit
+     
+     \param unit Unit to represent. Number 0 represents GL_TEXTURE0 but you can also specify the GL constant directly.
+     */
     TextureUnit(unsigned unit);
     
+    /// Returns texture unit numbered from 0
     operator unsigned()const{ return _unit; };
     
+    /// Returns GL unit contant (GL_TEXTUREX)
+    GLenum GetGLUnit()const{ return GL_TEXTURE0 + _unit; }
+    
+    /// Set the unit active
     TextureUnit& Bind();
+    /// Set the last possible texture unit
     static void BindNone();
+    /// Set the last possible texture unit
     TextureUnit& Unbind(){ BindNone(); return *this; };
     
     GLint GetInt(GLenum target, GLenum pname);
@@ -31,12 +41,18 @@ public:
     
     // helpers ---
     
+    /** Set wrapping mode
+     
+     Initially are all wrap modes set to WrapMode::REPEAT.
+     */
     TextureUnit& SetWrap(GLenum target, WrapMode::E s);
     TextureUnit& SetWrap(GLenum target, WrapMode::E s, WrapMode::E t);
     TextureUnit& SetWrap(GLenum target, WrapMode::E s, WrapMode::E t, WrapMode::E r);
     
-    /// Set texture filtering mode
-    /// The initial value of minifying is E::MIN_NEAREST_MIPMAP_LINEAR, for magnifying E::MAG_LINEAR
+    /** Set texture filtering mode
+     
+     The initial value of minifying is E::MIN_NEAREST_MIPMAP_LINEAR, for magnifying E::MAG_LINEAR
+     */
     TextureUnit& SetFilter(GLenum target, MinFilterMode::E minifying, MagFilterMode::E magnifying);
     
 private:
@@ -88,12 +104,24 @@ public:
     
     // helpers ---
     
+    /** Set wrapping mode
+     
+     \note Because this parameter is specified for the texture unit, make sure to first set SetTextureUnit() before calling this function
+     if you are not using default "0" unit. You can also set the parameter via TextureUnit.
+     
+     Initially are all wrap modes set to WrapMode::REPEAT.
+     */
     Texture& SetWrap(WrapMode::E s){ _unit.SetWrap(_target, s); return *this; };
     Texture& SetWrap(WrapMode::E s, WrapMode::E t){ _unit.SetWrap(_target, s, t); return *this; };
     Texture& SetWrap(WrapMode::E s, WrapMode::E t, WrapMode::E r){ _unit.SetWrap(_target, s, t, r); return *this; };
     
-    /// Set texture filtering mode
-    /// The initial value of minifying is E::MIN_NEAREST_MIPMAP_LINEAR, for magnifying E::MAG_LINEAR
+    /** Set texture filtering mode
+    
+     \note Because this parameter is specified for the texture unit, make sure to first set SetTextureUnit() before calling this function
+    if you are not using default "0" unit. You can also set the parameter via TextureUnit.
+     
+     The initial value of minifying is E::MIN_NEAREST_MIPMAP_LINEAR, for magnifying E::MAG_LINEAR
+     */
     Texture& SetFilter(MinFilterMode::E minifying, MagFilterMode::E magnifying){ _unit.SetFilter(_target, minifying, magnifying); return *this; };
     
 protected:
@@ -111,11 +139,11 @@ public:
     /// \param internalFormat How to represent the texture in GL
     /// \param format Format of supplied data
     /// \param type Data type of each channel
-    Texture1D& SetImage(GLint level, GLint internalFormat, GLsizei width,
+    Texture1D& SetImage(GLint level, InternalFormat::E internalFormat, GLsizei width,
                         GLenum format, GLenum type, const GLvoid * data);
     
     // helpers
-    Texture1D& SetEmptyImage(GLint internalFormat, GLsizei width, GLenum format/* = GL_RGBA*/) {
+    Texture1D& SetEmptyImage(InternalFormat::E internalFormat, GLsizei width, GLenum format/* = GL_RGBA*/) {
         return SetImage(0, internalFormat, width, format, GL_UNSIGNED_BYTE, NULL);
     }
 };
@@ -130,11 +158,11 @@ public:
     /// \param internalFormat How to represent the texture in GL
     /// \param format Format of supplied data
     /// \param type Data type of each channel
-    Texture2D& SetImage(GLint level, GLint internalFormat, GLsizei width, GLsizei height,
+    Texture2D& SetImage(GLint level, InternalFormat::E internalFormat, GLsizei width, GLsizei height,
                         GLenum format, GLenum type, const GLvoid * data);
 
     // helpers
-    Texture2D& SetEmptyImage(GLint internalFormat, GLsizei width, GLsizei height) {
+    Texture2D& SetEmptyImage(InternalFormat::E internalFormat, GLsizei width, GLsizei height) {
         return SetImage(0, internalFormat, width, height, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     }
 };
@@ -149,11 +177,11 @@ public:
     /// \param internalFormat How to represent the texture in GL
     /// \param format Format of supplied data
     /// \param type Data type of each channel
-    Texture3D& SetImage(GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth,
+    Texture3D& SetImage(GLint level, InternalFormat::E internalFormat, GLsizei width, GLsizei height, GLsizei depth,
                         GLenum format, GLenum type, const GLvoid * data);
     
     // helpers
-    Texture3D& SetEmptyImage(GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth) {
+    Texture3D& SetEmptyImage(InternalFormat::E internalFormat, GLsizei width, GLsizei height, GLsizei depth) {
         return SetImage(0, internalFormat, width, height, depth, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     }
 };
@@ -169,11 +197,11 @@ public:
     /// \param internalFormat How to represent the texture in GL
     /// \param format Format of supplied data
     /// \param type Data type of each channel
-    TextureCube& SetImage(CubeFace::E face, GLint level, GLint internalFormat, GLsizei width, GLsizei height,
+    TextureCube& SetImage(CubeFace::E face, GLint level, InternalFormat::E internalFormat, GLsizei width, GLsizei height,
                             GLenum format, GLenum type, const GLvoid * data);
     
     // helpers
-    TextureCube& SetEmptyImage(CubeFace::E face, GLint internalFormat, GLsizei width, GLsizei height) {
+    TextureCube& SetEmptyImage(CubeFace::E face, InternalFormat::E internalFormat, GLsizei width, GLsizei height) {
         return SetImage(face, 0, internalFormat, width, height, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
     }
 };

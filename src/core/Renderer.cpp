@@ -24,6 +24,11 @@ void Renderer::DrawArrays(DrawMode::E mode, GLint first, GLsizei count)
     glDrawArrays(mode, first, count);
 }
 
+static void Viewport(GLint x, GLint y, GLsizei width, GLsizei height)
+{
+    glViewport(x, y, width, height);
+}
+
 GLint Renderer::GetInt(GLenum pname)
 {
     GLint val;

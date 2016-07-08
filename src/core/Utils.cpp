@@ -37,15 +37,15 @@ const char* GLErrorToString(unsigned error)
     if(error == GL_NO_ERROR) {
         return "GL_NO_ERROR: No error has been recorded.";
     } else if(error == GL_INVALID_ENUM) {
-        return "GL error during %s: GL_INVALID_ENUM: An unacceptable value is specified for an enumerated argument.";
+        return "GL_INVALID_ENUM: An unacceptable value is specified for an enumerated argument.";
     } else if(error == GL_INVALID_VALUE) {
-        return "GL error during %s: GL_INVALID_VALUE: A numeric argument is out of range.\n";
+        return "GL_INVALID_VALUE: A numeric argument is out of range.\n";
     } else if(error == GL_INVALID_OPERATION) {
-        return "GL error during %s: GL_INVALID_OPERATION: The specified operation is not allowed in the current state.";
+        return "GL_INVALID_OPERATION: The specified operation is not allowed in the current state.";
     } else if(error == GL_OUT_OF_MEMORY) {
-        return "GL error during %s: GL_OUT_OF_MEMORY: There is not enough memory left to execute the command.";
+        return "GL_OUT_OF_MEMORY: There is not enough memory left to execute the command.";
     } else if(error == GL_INVALID_FRAMEBUFFER_OPERATION) {
-        return "GL error during %s: GL_INVALID_FRAMEBUFFER_OPERATION: The framebuffer object is not complete.";
+        return "GL_INVALID_FRAMEBUFFER_OPERATION: The framebuffer object is not complete.";
     } else {
         static char buff[32];
         sprintf(buff, "0x%X", error);

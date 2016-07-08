@@ -38,6 +38,8 @@ public:
     static void ClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
     static void DrawElements(DrawMode::E mode, GLsizei count, IndicesType::E type, const GLvoid * indices = NULL);
     static void DrawArrays(DrawMode::E mode, GLint first, GLsizei count);
+    static void Viewport(GLint x, GLint y, GLsizei width, GLsizei height);
+    
     static GLint GetInt(GLenum pname);
     static const char* GetString(GLenum pname);
     
@@ -62,14 +64,14 @@ protected:
     typedef void(*DeleteObjectCallbackType2)(GLsizei n, const GLuint* ptr);
     
     /// Default constructor
-    GLObject() : _obj(0), _refs(new unsigned(1)), _del1(NULL), _del2(NULL) {
+    GLObject() : _refs(new unsigned(1)), _del1(NULL), _del2(NULL), _obj(0) {
 #ifdef GLFK_DEBUG_REF_COUNTING
         printf("%p: new GLObject\n", this);
 #endif
     };
     
     /// Copy constructor
-    GLObject(const GLObject& other) : _obj(other._obj), _refs(other._refs), _del1(other._del1), _del2(other._del2) {
+    GLObject(const GLObject& other) : _refs(other._refs), _del1(other._del1), _del2(other._del2), _obj(other._obj) {
 #ifdef GLFK_DEBUG_REF_COUNTING
         printf("%p: copy with obj %u\n", this, _obj);
 #endif
@@ -143,10 +145,11 @@ public:
     unsigned RefCount()const{ return *_refs; };
     
 private:
-    GLuint _obj;
     unsigned *_refs;
     DeleteObjectCallbackType1 _del1;
     DeleteObjectCallbackType2 _del2;
+protected:
+    GLuint _obj;
 };
 
 // useful macros -------------------------------------------------

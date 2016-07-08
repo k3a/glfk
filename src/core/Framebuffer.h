@@ -53,6 +53,7 @@ public:
     
     FramebufferWithTarget& Bind(){ return (FramebufferWithTarget&)BaseFramebuffer::Bind(_target); };
     FramebufferWithTarget& Unbind(){ return (FramebufferWithTarget&)BaseFramebuffer::Unbind(_target); };
+    
     GLenum GetTarget()const{ return _target; };
     
     FramebufferStatus::E CheckStatus() { return BaseFramebuffer::CheckStatus(_target); };
@@ -86,7 +87,7 @@ public:
         return (FramebufferWithTarget&)BaseFramebuffer::AttachTexture2D(_target, attachment, texture, level);
     }
     
-private:
+protected:
     GLenum _target;
 };
 
@@ -95,7 +96,9 @@ class Framebuffer : public FramebufferWithTarget
 {
 public:
     Framebuffer() : FramebufferWithTarget(GL_FRAMEBUFFER) {};
+    static Framebuffer& Screen();
 };
+Framebuffer& Screen();
 
 /// Framebuffer Object (FBO) for target GL_DRAW_FRAMEBUFFER
 class DrawFramebuffer : public FramebufferWithTarget
@@ -104,10 +107,11 @@ public:
     DrawFramebuffer() : FramebufferWithTarget(GL_DRAW_FRAMEBUFFER) {};
 };
 
-
 /// Framebuffer Object (FBO) for target GL_READ_FRAMEBUFFER
 class ReadFramebuffer : public FramebufferWithTarget
 {
 public:
     ReadFramebuffer() : FramebufferWithTarget(GL_READ_FRAMEBUFFER) {};
 };
+
+

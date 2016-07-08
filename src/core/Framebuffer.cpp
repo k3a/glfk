@@ -71,8 +71,7 @@ BaseFramebuffer& BaseFramebuffer::AttachTexture2D(GLenum target, GLenum attachme
     GLFK_AUTO_BIND(target);
     
     glFramebufferTexture2D(target, attachment, textarget, texture, level);
-    /*GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-    glDrawBuffers(1, DrawBuffers);*/
+
     GLFK_AUTO_UNBIND(target);
     return *this;
 }
@@ -96,3 +95,22 @@ BaseFramebuffer& BaseFramebuffer::Clear(GLenum target, GLbitfield mask)
     GLFK_AUTO_UNBIND(target);
     return *this;
 }
+
+//------------------------------------------------------
+
+Framebuffer& Framebuffer::Screen()
+{
+    static Framebuffer* fb = NULL;
+    if (!fb) {
+        fb = (Framebuffer*)malloc(sizeof(Framebuffer));
+        fb->_obj = 0;
+        fb->_target = GL_FRAMEBUFFER;
+    }
+    return *fb;
+};
+
+Framebuffer& Screen()
+{
+    return Framebuffer::Screen();
+}
+

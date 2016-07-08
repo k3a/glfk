@@ -24,6 +24,7 @@ TextureUnit& TextureUnit::Bind()
         return *this;
     s_activeUnit = _unit;
 #endif
+    
     glActiveTexture(GL_TEXTURE0 + _unit);
     return *this;
 }
@@ -38,6 +39,7 @@ void TextureUnit::BindNone()
         return;
     s_activeUnit = unitToSet;
 #endif
+    
     glActiveTexture(GL_TEXTURE0 + unitToSet);
 }
 
@@ -118,6 +120,8 @@ BaseTexture& BaseTexture::GenerateMipmap(GLenum target)
 
 Texture& Texture::SetTextureUnit(TextureUnit unit)
 {
+    _unit = unit;
+    
     unit.Bind();
     
     glBindTexture(_target, *this); // force-bind
@@ -132,7 +136,7 @@ Texture& Texture::SetTextureUnit(TextureUnit unit)
 
 //----------------------------------------------------------
 
-Texture1D& Texture1D::SetImage(GLint level, GLint internalFormat, GLsizei width, GLenum format, GLenum type, const GLvoid * data)
+Texture1D& Texture1D::SetImage(GLint level, InternalFormat::E internalFormat, GLsizei width, GLenum format, GLenum type, const GLvoid * data)
 {
     GLFK_AUTO_BIND();
     glTexImage1D(_target, level, internalFormat, width, 0, format, type, data);
@@ -142,7 +146,7 @@ Texture1D& Texture1D::SetImage(GLint level, GLint internalFormat, GLsizei width,
 
 //----------------------------------------------------------
 
-Texture2D& Texture2D::SetImage(GLint level, GLint internalFormat, GLsizei width, GLsizei height,
+Texture2D& Texture2D::SetImage(GLint level, InternalFormat::E internalFormat, GLsizei width, GLsizei height,
                                 GLenum format, GLenum type, const GLvoid * data)
 {
     GLFK_AUTO_BIND();
@@ -153,7 +157,7 @@ Texture2D& Texture2D::SetImage(GLint level, GLint internalFormat, GLsizei width,
 
 //----------------------------------------------------------
 
-Texture3D& Texture3D::SetImage(GLint level, GLint internalFormat, GLsizei width, GLsizei height,
+Texture3D& Texture3D::SetImage(GLint level, InternalFormat::E internalFormat, GLsizei width, GLsizei height,
                     GLsizei depth, GLenum format, GLenum type, const GLvoid * data)
 {
     GLFK_AUTO_BIND();
@@ -164,7 +168,7 @@ Texture3D& Texture3D::SetImage(GLint level, GLint internalFormat, GLsizei width,
 
 //----------------------------------------------------------
 
-TextureCube& TextureCube::SetImage(CubeFace::E face, GLint level, GLint internalFormat, GLsizei width, GLsizei height,
+TextureCube& TextureCube::SetImage(CubeFace::E face, GLint level, InternalFormat::E internalFormat, GLsizei width, GLsizei height,
                                         GLenum format, GLenum type, const GLvoid * data)
 {
     GLFK_AUTO_BIND();

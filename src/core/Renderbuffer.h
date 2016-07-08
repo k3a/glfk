@@ -17,7 +17,7 @@ public:
     static void BindNone();
     Renderbuffer& Unbind(){ BindNone(); return *this; };
     
-    Renderbuffer& SetStorage(GLenum internalformat, GLsizei width, GLsizei height);
+    Renderbuffer& SetStorage(InternalFormat::E internalformat, GLsizei width, GLsizei height);
 
 private:
 #ifdef GLFK_PREVENT_MULTIPLE_BIND

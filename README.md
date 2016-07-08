@@ -42,6 +42,9 @@ The code is divided into Core and Extra sections.
 
 ## TODO ##
 
+- glDrawBuffers or something like that for multiple render targets
+	GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+    glDrawBuffers(1, DrawBuffers);
 - Put headers into a separate subfolder
 - New features of GL 3.x+ like multisample alternatives (glRenderbufferStorageMultisample)
 - handle proxy textures somehow
