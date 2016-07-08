@@ -225,5 +225,6 @@ private:
     bool _valid;
 };
 
-#define GLSL150(x) "#version 150\n" #x 
+#define GLSL(verStr, x) "#version " verStr "\n" #x
+#define GLSL150(x) GLSL("150", x)
 

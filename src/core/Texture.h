@@ -55,7 +55,7 @@ public:
      */
     TextureUnit& SetFilter(GLenum target, MinFilterMode::E minifying, MagFilterMode::E magnifying);
     
-private:
+protected:
 #ifdef GLFK_PREVENT_MULTIPLE_BIND
     static unsigned s_activeUnit;
 #endif
@@ -72,6 +72,7 @@ public:
     static void BindNone(GLenum target);
     BaseTexture& Unbind(GLenum target){ BindNone(target); return *this; };
     
+    bool IsValid()const{ return _valid; };
     BaseTexture& GenerateMipmap(GLenum target);
     
     // helpers
@@ -82,6 +83,9 @@ private:
     typedef std::map<GLenum, GLuint> TargetTextureMap;
     static TargetTextureMap s_boundTextureToTarget;
 #endif
+    
+protected:
+    bool _valid;
 };
 
 /// Texture for a specific target
@@ -140,11 +144,11 @@ public:
     /// \param format Format of supplied data
     /// \param type Data type of each channel
     Texture1D& SetImage(GLint level, InternalFormat::E internalFormat, GLsizei width,
-                        GLenum format, GLenum type, const GLvoid * data);
+                        PixelDataFormat::E format, PixelDataType::E type, const GLvoid * data);
     
     // helpers
-    Texture1D& SetEmptyImage(InternalFormat::E internalFormat, GLsizei width, GLenum format/* = GL_RGBA*/) {
-        return SetImage(0, internalFormat, width, format, GL_UNSIGNED_BYTE, NULL);
+    Texture1D& SetEmptyImage(InternalFormat::E internalFormat, GLsizei width, PixelDataFormat::E format/* = PixelDataFormat::RGBA*/) {
+        return SetImage(0, internalFormat, width, format, PixelDataType::UNSIGNED_BYTE, NULL);
     }
 };
 
@@ -159,11 +163,11 @@ public:
     /// \param format Format of supplied data
     /// \param type Data type of each channel
     Texture2D& SetImage(GLint level, InternalFormat::E internalFormat, GLsizei width, GLsizei height,
-                        GLenum format, GLenum type, const GLvoid * data);
+                        PixelDataFormat::E format, PixelDataType::E type, const GLvoid * data);
 
     // helpers
     Texture2D& SetEmptyImage(InternalFormat::E internalFormat, GLsizei width, GLsizei height) {
-        return SetImage(0, internalFormat, width, height, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        return SetImage(0, internalFormat, width, height, PixelDataFormat::RGBA, PixelDataType::UNSIGNED_BYTE, NULL);
     }
 };
 
@@ -178,11 +182,11 @@ public:
     /// \param format Format of supplied data
     /// \param type Data type of each channel
     Texture3D& SetImage(GLint level, InternalFormat::E internalFormat, GLsizei width, GLsizei height, GLsizei depth,
-                        GLenum format, GLenum type, const GLvoid * data);
+                        PixelDataFormat::E format, PixelDataType::E type, const GLvoid * data);
     
     // helpers
     Texture3D& SetEmptyImage(InternalFormat::E internalFormat, GLsizei width, GLsizei height, GLsizei depth) {
-        return SetImage(0, internalFormat, width, height, depth, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        return SetImage(0, internalFormat, width, height, depth, PixelDataFormat::RGBA, PixelDataType::UNSIGNED_BYTE, NULL);
     }
 };
 
@@ -198,11 +202,11 @@ public:
     /// \param format Format of supplied data
     /// \param type Data type of each channel
     TextureCube& SetImage(CubeFace::E face, GLint level, InternalFormat::E internalFormat, GLsizei width, GLsizei height,
-                            GLenum format, GLenum type, const GLvoid * data);
+                            PixelDataFormat::E format, PixelDataType::E type, const GLvoid * data);
     
     // helpers
     TextureCube& SetEmptyImage(CubeFace::E face, InternalFormat::E internalFormat, GLsizei width, GLsizei height) {
-        return SetImage(face, 0, internalFormat, width, height, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        return SetImage(face, 0, internalFormat, width, height, PixelDataFormat::RGBA, PixelDataType::UNSIGNED_BYTE, NULL);
     }
 };
 

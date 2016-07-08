@@ -38,6 +38,16 @@ void VertexArray::BindNone()
     glBindVertexArray(0);
 }
 
+VertexArray& VertexArray::SetAttribPointer(GLuint index, GLint size, AttribType::E type,
+                                           bool normalized, GLsizei stride, const GLvoid * pointer)
+{
+    GLFK_AUTO_BIND();
+    glEnableVertexAttribArray(index);
+    glVertexAttribPointer(index, size, type, normalized, stride, pointer);
+    GLFK_AUTO_UNBIND();
+    return *this;
+}
+
 VertexArray& VertexArray::EnableAttribArray(GLuint index, bool enable)
 {
     GLFK_AUTO_BIND();

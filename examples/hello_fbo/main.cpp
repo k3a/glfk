@@ -43,7 +43,7 @@ static const char* fsSrc = GLSL150(
     out vec4 f_vColor;
 
     void main() {
-        f_vColor = vec4( texture(u_sTexture, v_vCoord.xy).rgb + u_vColor/2.0 , 1.0);
+        f_vColor = vec4( texture(u_sTexture, v_vCoord.xy).rgb + u_vColor , 1.0);
     }
 );
 
@@ -86,15 +86,14 @@ int main()
     
     ArrayBuffer bv(vao);
     bv.SetData(sizeof(unitSquareVertPos), unitSquareVertPos);
-    bv.SetAttribPointer(prg.GetAttribute("a_vPos"), 3, AttribType::FLOAT);
-    vao.EnableAttribArray(prg.GetAttribute("a_vPos"));
+    vao.SetAttribPointer(prg.GetAttribute("a_vPos"), 3, AttribType::FLOAT);
     
     Texture2D tex;
     unsigned char texData[] = {
         255, 0, 0, 255,  0, 255, 0, 255,
         0, 0, 255, 255,  255, 255, 0, 255
     };
-    tex.SetImage(0, InternalFormat::RGB, 2, 2, GL_RGBA, GL_UNSIGNED_BYTE, texData);
+    tex.SetImage(0, InternalFormat::RGB, 2, 2, PixelDataFormat::RGBA, PixelDataType::UNSIGNED_BYTE, texData);
     tex.GenerateMipmap();
     tex.SetTextureUnit(TextureUnit(0));
     prg.SetUniformTextureUnit("uTexture", tex.GetTextureUnit());
@@ -128,13 +127,14 @@ int main()
         // draw to the framebuffer
         
         fb.Bind();
-        R::Viewport(0, 0, 1024, 1024);
+        R::Viewport(0, 0, s_fbSize.x, s_fbSize.y);
         
         R::Clear();
         
         prg.Use();
-        prg.SetUniformTextureUnit("u_sTexture", tex.GetTextureUnit());
         prg.SetUniformFloat("u_vScale", (1.0+sinf(time))/2.0, (1.0+sinf(time))/2.0);
+        prg.SetUniformTextureUnit("u_sTexture", tex.GetTextureUnit());
+        prg.SetUniformFloat("u_vColor", 0, 0, 0);
         
         vao.DrawArrays(DrawMode::TRIANGLE_FAN, 0, 4);
    
@@ -147,8 +147,8 @@ int main()
         
         prg.Use();
         prg.SetUniformFloat("u_vScale", 1, 1);
-        prg.SetUniformFloat("u_vColor", 0, 0, 0);
         prg.SetUniformTextureUnit("u_sTexture", rt.GetTextureUnit());
+        prg.SetUniformFloat("u_vColor", 0, 0, (1.0+sinf(4*time))/2.0);
         
         vao.DrawArrays(DrawMode::TRIANGLE_FAN, 0, 4);
         

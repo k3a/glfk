@@ -48,14 +48,3 @@ BaseBuffer& BaseBuffer::SetData(GLenum target, GLsizeiptr size, const GLvoid * d
     return *this;
 }
 
-//-------------------------------------------------
-
-ArrayBuffer& ArrayBuffer::SetAttribPointer(GLuint index, GLint size, AttribType::E type,
-        bool normalized, GLsizei stride, const GLvoid * pointer)
-{
-    GLFK_AUTO_BIND();
-    glVertexAttribPointer(index, size, type, normalized, stride, pointer);
-    GLFK_AUTO_UNBIND();
-    return *this;
-}
-

@@ -49,9 +49,6 @@ class ArrayBuffer : public Buffer
 {
 public:    
     ArrayBuffer(VertexArray& vao) : Buffer(vao, GL_ARRAY_BUFFER) {};
-
-    ArrayBuffer& SetAttribPointer(GLuint index, GLint size, AttribType::E type,
-            bool normalized = false, GLsizei stride = 0, const GLvoid * pointer = NULL);
 };
 /// Alias for ArrayBuffer
 typedef ArrayBuffer VertexBuffer;

@@ -80,6 +80,7 @@ BaseTexture::TargetTextureMap BaseTexture::s_boundTextureToTarget;
 #endif
 
 BaseTexture::BaseTexture()
+: _valid(false)
 {
     GLuint obj;
     glGenTextures(1, &obj);
@@ -110,6 +111,10 @@ void BaseTexture::BindNone(GLenum target)
 
 BaseTexture& BaseTexture::GenerateMipmap(GLenum target)
 {
+#ifdef DEBUG
+    assert( IsValid() ); // texture must be valid (hold data)
+#endif
+    
     GLFK_AUTO_BIND(target);
     glGenerateMipmap(target);
     GLFK_AUTO_UNBIND(target);
@@ -136,10 +141,11 @@ Texture& Texture::SetTextureUnit(TextureUnit unit)
 
 //----------------------------------------------------------
 
-Texture1D& Texture1D::SetImage(GLint level, InternalFormat::E internalFormat, GLsizei width, GLenum format, GLenum type, const GLvoid * data)
+Texture1D& Texture1D::SetImage(GLint level, InternalFormat::E internalFormat, GLsizei width, PixelDataFormat::E format, PixelDataType::E type, const GLvoid * data)
 {
     GLFK_AUTO_BIND();
     glTexImage1D(_target, level, internalFormat, width, 0, format, type, data);
+    _valid = true;
     GLFK_AUTO_UNBIND();
     return *this;
 }
@@ -147,10 +153,11 @@ Texture1D& Texture1D::SetImage(GLint level, InternalFormat::E internalFormat, GL
 //----------------------------------------------------------
 
 Texture2D& Texture2D::SetImage(GLint level, InternalFormat::E internalFormat, GLsizei width, GLsizei height,
-                                GLenum format, GLenum type, const GLvoid * data)
+                                PixelDataFormat::E format, PixelDataType::E type, const GLvoid * data)
 {
     GLFK_AUTO_BIND();
     glTexImage2D(_target, level, internalFormat, width, height, 0, format, type, data);
+    _valid = true;
     GLFK_AUTO_UNBIND();
     return *this;
 }
@@ -158,10 +165,11 @@ Texture2D& Texture2D::SetImage(GLint level, InternalFormat::E internalFormat, GL
 //----------------------------------------------------------
 
 Texture3D& Texture3D::SetImage(GLint level, InternalFormat::E internalFormat, GLsizei width, GLsizei height,
-                    GLsizei depth, GLenum format, GLenum type, const GLvoid * data)
+                    GLsizei depth, PixelDataFormat::E format, PixelDataType::E type, const GLvoid * data)
 {
     GLFK_AUTO_BIND();
     glTexImage3D(_target, level, internalFormat, width, height, depth, 0, format, type, data);
+    _valid = true;
     GLFK_AUTO_UNBIND();
     return *this;
 }
@@ -169,10 +177,11 @@ Texture3D& Texture3D::SetImage(GLint level, InternalFormat::E internalFormat, GL
 //----------------------------------------------------------
 
 TextureCube& TextureCube::SetImage(CubeFace::E face, GLint level, InternalFormat::E internalFormat, GLsizei width, GLsizei height,
-                                        GLenum format, GLenum type, const GLvoid * data)
+                                        PixelDataFormat::E format, PixelDataType::E type, const GLvoid * data)
 {
     GLFK_AUTO_BIND();
     glTexImage2D(face, level, internalFormat, width, height, 0, format, type, data);
+    _valid = true;
     GLFK_AUTO_UNBIND();
     return *this;
 }

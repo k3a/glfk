@@ -87,8 +87,7 @@ int main()
         // vertex buffer
         ArrayBuffer bv(vao);
         bv.SetData(sizeof(unitSquareVertPos), unitSquareVertPos);
-        bv.SetAttribPointer(prg.GetAttribute("inPos"), 3, AttribType::FLOAT);
-        vao.EnableAttribArray(prg.GetAttribute("inPos"));
+        vao.SetAttribPointer(prg.GetAttribute("inPos"), 3, AttribType::FLOAT);
 
         // index buffer
         ElementArrayBuffer bi(vao);
@@ -101,7 +100,7 @@ int main()
         255, 0, 0, 255,  0, 255, 0, 255,
         0, 0, 255, 255,  255, 255, 0, 255
     };
-    tex.SetImage(0, InternalFormat::RGB, 2, 2, GL_RGBA, GL_UNSIGNED_BYTE, texData);
+    tex.SetImage(0, InternalFormat::RGB, 2, 2, PixelDataFormat::RGBA, PixelDataType::UNSIGNED_BYTE, texData);
     tex.GenerateMipmap();
     tex.SetTextureUnit(TextureUnit(0));
     
