@@ -8,7 +8,8 @@ The GNU General Public License v3.0
 BaseBuffer::TargetBufferMap BaseBuffer::s_boundBufferToTarget;
 #endif
 
-BaseBuffer::BaseBuffer(VertexArray& vao)
+BaseBuffer::BaseBuffer(VertexArray vao)
+: _vao(vao)
 {
     GLFK_AUTO_BIND_OBJ(vao);
     
@@ -47,4 +48,17 @@ BaseBuffer& BaseBuffer::SetData(GLenum target, GLsizeiptr size, const GLvoid * d
     GLFK_AUTO_UNBIND(target);
     return *this;
 }
+
+//-----------------------------------------------------------------------
+
+ArrayBuffer& ArrayBuffer::SetAttribPointer(GLuint index, GLint size, AttribType::E type,
+                              bool normalized, GLsizei stride, const GLvoid * pointer)
+{
+    GLFK_AUTO_BIND();
+    _vao.EnableAttribArray(index);
+    glVertexAttribPointer(index, size, type, normalized, stride, pointer);
+    GLFK_AUTO_UNBIND();
+    return *this;
+}
+
 

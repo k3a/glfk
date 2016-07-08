@@ -84,12 +84,23 @@ struct Window::sPrivate {
 };
 
 Window::Window() 
-: _private(new sPrivate) 
+: _private(new sPrivate), _valid(false)
 {
     if (!glfwInit())
         return;
 
     glfwSetErrorCallback(glfw_error_cb);
+}
+
+Window::Window(unsigned width, unsigned height, const char* title)
+: _private(new sPrivate), _valid(false)
+{
+    if (!glfwInit())
+        return;
+    
+    glfwSetErrorCallback(glfw_error_cb);
+    
+    Create(width, height, title);
 }
 
 Window::~Window() 
@@ -104,6 +115,7 @@ bool Window::Create(unsigned width, unsigned height, const char* title)
 #ifdef DEBUG
     printf("DEBUG enabled\n");
 #endif
+    _valid = false;
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -150,6 +162,7 @@ bool Window::Create(unsigned width, unsigned height, const char* title)
     glad_set_post_callback(glad_post_cb);
 #endif
 
+    _valid = true;
     return true;
 }
 
@@ -163,7 +176,7 @@ Window::FramebufferSizeCallback Window::SetFramebufferSizeCallback(FramebufferSi
     // call if set for the first time
     if (prev != cb) { 
         int width, height;
-        glfwGetFramebufferSize(_private->window, &width, &height);
+        GetFramebufferSize(width, height);
         cb(width, height);
     }
 
@@ -178,15 +191,22 @@ Window::KeyCallback Window::SetKeyCallback(KeyCallback cb)
     return prev;
 }
 
-void Window::SwapBuffers()
+Window& Window::SwapBuffers()
 {
     glfwSwapBuffers(_private->window);
+    return *this;
 }
-void Window::PollEvents()
+Window& Window::PollEvents()
 {
     glfwPollEvents();
+    return *this;
 }
-bool Window::ShouldClose() 
+Window& Window::GetFramebufferSize(int &width, int &height)
+{
+    glfwGetFramebufferSize(_private->window, &width, &height);
+    return *this;
+}
+bool Window::ShouldClose()
 {
     return glfwWindowShouldClose(_private->window);
 }

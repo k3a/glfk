@@ -14,7 +14,7 @@ The GNU General Public License v3.0
 class BaseBuffer : public GLObject
 {
 public:
-    BaseBuffer(VertexArray& vao);
+    BaseBuffer(VertexArray vao);
 
     BaseBuffer& Bind(GLenum target);
     static void BindNone(GLenum target);
@@ -26,13 +26,16 @@ private:
     typedef std::map<GLenum, GLuint> TargetBufferMap;
     static TargetBufferMap s_boundBufferToTarget;
 #endif
+    
+protected:
+    VertexArray _vao;
 };
 
 /// Vertex Buffer Object (VBO) for a single target
 class Buffer : public BaseBuffer
 {
 public:
-    Buffer(VertexArray& vao, GLenum target) : BaseBuffer(vao), _target(target) { }
+    Buffer(VertexArray vao, GLenum target) : BaseBuffer(vao), _target(target) { }
     Buffer& Bind() { return (Buffer&)BaseBuffer::Bind(_target); }
     Buffer& Unbind() { return (Buffer&)BaseBuffer::Unbind(_target); }
     
@@ -48,7 +51,15 @@ protected:
 class ArrayBuffer : public Buffer
 {
 public:    
-    ArrayBuffer(VertexArray& vao) : Buffer(vao, GL_ARRAY_BUFFER) {};
+    ArrayBuffer(VertexArray vao) : Buffer(vao, GL_ARRAY_BUFFER) {};
+    
+    /// Enables the specified attribute array
+    ArrayBuffer& EnableAttribArray(GLuint index, bool enable=true){ _vao.EnableAttribArray(index, enable); return *this; };
+    
+    /** Enable attribute array and set array pointer
+     \node Will also automatically call EnableAttribArray for the index. */
+    ArrayBuffer& SetAttribPointer(GLuint index, GLint size, AttribType::E type,
+                                  bool normalized = false, GLsizei stride = 0, const GLvoid * pointer = NULL);
 };
 /// Alias for ArrayBuffer
 typedef ArrayBuffer VertexBuffer;
@@ -57,7 +68,7 @@ typedef ArrayBuffer VertexBuffer;
 class ElementArrayBuffer : public Buffer
 {
 public:
-    ElementArrayBuffer(VertexArray& vao) : Buffer(vao, GL_ELEMENT_ARRAY_BUFFER) {};
+    ElementArrayBuffer(VertexArray vao) : Buffer(vao, GL_ELEMENT_ARRAY_BUFFER) {};
 };
 /// Alias for ElementArrayBuffer
 typedef ElementArrayBuffer IndexBuffer;
@@ -67,56 +78,56 @@ typedef ElementArrayBuffer IndexBuffer;
 class CopyReadBuffer : public Buffer
 {
 public:
-    CopyReadBuffer(VertexArray& vao) : Buffer(vao, GL_COPY_READ_BUFFER) {};
+    CopyReadBuffer(VertexArray vao) : Buffer(vao, GL_COPY_READ_BUFFER) {};
 };
 
 /// Buffer Object for GL_COPY_READ_BUFFER
 class CopyWriteBuffer : public Buffer
 {
 public:
-    CopyWriteBuffer(VertexArray& vao) : Buffer(vao, GL_COPY_WRITE_BUFFER) {};
+    CopyWriteBuffer(VertexArray vao) : Buffer(vao, GL_COPY_WRITE_BUFFER) {};
 };
 
 /// Buffer Object for GL_DRAW_INDIRECT_BUFFER
 class DrawIndirrectBuffer : public Buffer
 {
 public:
-    DrawIndirrectBuffer(VertexArray& vao) : Buffer(vao, GL_DRAW_INDIRECT_BUFFER) {};
+    DrawIndirrectBuffer(VertexArray vao) : Buffer(vao, GL_DRAW_INDIRECT_BUFFER) {};
 };
 
 /// Buffer Object for GL_PIXEL_PACK_BUFFER
 class PixelPackBuffer : public Buffer
 {
 public:
-    PixelPackBuffer(VertexArray& vao) : Buffer(vao, GL_PIXEL_PACK_BUFFER) {};
+    PixelPackBuffer(VertexArray vao) : Buffer(vao, GL_PIXEL_PACK_BUFFER) {};
 };
 
 /// Buffer Object for GL_PIXEL_UNPACK_BUFFER
 class PixelUnackBuffer : public Buffer
 {
 public:
-    PixelUnackBuffer(VertexArray& vao) : Buffer(vao, GL_PIXEL_UNPACK_BUFFER) {};
+    PixelUnackBuffer(VertexArray vao) : Buffer(vao, GL_PIXEL_UNPACK_BUFFER) {};
 };
 
 /// Buffer Object for GL_TEXTURE_BUFFER
 class TextureBuffer : public Buffer
 {
 public:
-    TextureBuffer(VertexArray& vao) : Buffer(vao, GL_TEXTURE_BUFFER) {};
+    TextureBuffer(VertexArray vao) : Buffer(vao, GL_TEXTURE_BUFFER) {};
 };
 
 /// Buffer Object for GL_TRANSFORM_FEEDBACK_BUFFER
 class TransformFeedbackBuffer : public Buffer
 {
 public:
-    TransformFeedbackBuffer(VertexArray& vao) : Buffer(vao, GL_TRANSFORM_FEEDBACK_BUFFER) {};
+    TransformFeedbackBuffer(VertexArray vao) : Buffer(vao, GL_TRANSFORM_FEEDBACK_BUFFER) {};
 };
 
 /// Buffer Object for GL_UNIFORM_BUFFER
 class UniformBuffer : public Buffer
 {
 public:
-    UniformBuffer(VertexArray& vao) : Buffer(vao, GL_UNIFORM_BUFFER) {};
+    UniformBuffer(VertexArray vao) : Buffer(vao, GL_UNIFORM_BUFFER) {};
 };
 
 

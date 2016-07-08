@@ -97,7 +97,7 @@ int main()
         // vertex buffer
         ArrayBuffer bv(vao);
         bv.SetData(sizeof(unitSquareVertPos), unitSquareVertPos);
-        vao.SetAttribPointer(prg.GetAttribute("inPos"), 3, AttribType::FLOAT);
+        bv.SetAttribPointer(prg.GetAttribute("inPos"), 3, AttribType::FLOAT);
 
         // index buffer
         ElementArrayBuffer bi(vao);

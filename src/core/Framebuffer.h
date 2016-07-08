@@ -19,20 +19,20 @@ public:
     BaseFramebuffer& Unbind(GLenum target){ BindNone(target); return *this; };
     
     FramebufferStatus::E CheckStatus(GLenum target);
-    BaseFramebuffer& AttachRenderbuffer(GLenum target, GLenum attachment, GLuint renderbuffer);
+    BaseFramebuffer& AttachRenderbuffer(GLenum target, FramebufferAttachment::E attachment, GLuint renderbuffer);
     /// \param level Specifies the mipmap level of the texture object to attach (0 = base).
-    BaseFramebuffer& AttachTexture1D(GLenum target, GLenum attachment, GLuint texture, GLint level);
+    BaseFramebuffer& AttachTexture1D(GLenum target, FramebufferAttachment::E attachment, GLuint texture, GLint level);
     /// \param level Specifies the mipmap level of the texture object to attach (0 = base).
-    BaseFramebuffer& AttachTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level);
+    BaseFramebuffer& AttachTexture2D(GLenum target, FramebufferAttachment::E attachment, GLenum textarget, GLuint texture, GLint level);
     /// \param level Mipmap level of the texture object to attach (0 = base).
     /// \param layer Layer of the 3D texture to attach as a 2D texture
-    BaseFramebuffer& AttachTexture3D(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer);
+    BaseFramebuffer& AttachTexture3D(GLenum target, FramebufferAttachment::E attachment, GLuint texture, GLint level, GLint layer);
     
     // helpers
-    BaseFramebuffer& AttachTextureCube(GLenum target, GLenum attachment, CubeFace::E face, GLuint texture, GLint level) {
+    BaseFramebuffer& AttachTextureCube(GLenum target, FramebufferAttachment::E attachment, CubeFace::E face, GLuint texture, GLint level) {
         return AttachTexture2D(target, attachment, face, texture, level);
     }
-    BaseFramebuffer& AttachTexture2D(GLenum target, GLenum attachment, GLuint texture, GLint level) {
+    BaseFramebuffer& AttachTexture2D(GLenum target, FramebufferAttachment::E attachment, GLuint texture, GLint level) {
         return AttachTexture2D(target, attachment, GL_TEXTURE_2D, texture, level);
     }
     BaseFramebuffer& Clear(GLenum target, GLbitfield mask = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -57,20 +57,20 @@ public:
     GLenum GetTarget()const{ return _target; };
     
     FramebufferStatus::E CheckStatus() { return BaseFramebuffer::CheckStatus(_target); };
-    FramebufferWithTarget& AttachRenderbuffer(GLenum attachment, GLuint renderbuffer) {
+    FramebufferWithTarget& AttachRenderbuffer(FramebufferAttachment::E attachment, GLuint renderbuffer) {
         return (FramebufferWithTarget&)BaseFramebuffer::AttachRenderbuffer(_target, attachment, renderbuffer);
     };
     /// \param level Specifies the mipmap level of the texture object to attach (0 = base).
-    FramebufferWithTarget& AttachTexture1D(GLenum attachment, GLuint texture, GLint level){
+    FramebufferWithTarget& AttachTexture1D(FramebufferAttachment::E attachment, GLuint texture, GLint level){
         return (FramebufferWithTarget&)BaseFramebuffer::AttachTexture1D(_target, attachment, texture, level);
     };
     /// \param level Specifies the mipmap level of the texture object to attach (0 = base).
-    FramebufferWithTarget& AttachTexture2D(GLenum attachment, GLenum textarget, GLuint texture, GLint level) {
+    FramebufferWithTarget& AttachTexture2D(FramebufferAttachment::E attachment, GLenum textarget, GLuint texture, GLint level) {
         return (FramebufferWithTarget&)BaseFramebuffer::AttachTexture2D(_target, attachment, textarget, texture, level);
     }
     /// \param level Mipmap level of the texture object to attach (0 = base).
     /// \param layer Layer of the 3D texture to attach as a 2D texture
-    FramebufferWithTarget& AttachTexture3D(GLenum attachment, GLuint texture, GLint level, GLint layer){
+    FramebufferWithTarget& AttachTexture3D(FramebufferAttachment::E attachment, GLuint texture, GLint level, GLint layer){
         return (FramebufferWithTarget&)BaseFramebuffer::AttachTexture3D(_target, attachment, texture, level, layer);
     }
     
@@ -83,11 +83,11 @@ public:
         return (FramebufferWithTarget&)BaseFramebuffer::Clear(_target, mask);
     };
     /// \param level Specifies the mipmap level of the texture object to attach (0 = base).
-    FramebufferWithTarget& AttachTextureCube(GLenum attachment, CubeFace::E face, GLuint texture, GLint level) {
+    FramebufferWithTarget& AttachTextureCube(FramebufferAttachment::E attachment, CubeFace::E face, GLuint texture, GLint level) {
         return (FramebufferWithTarget&)BaseFramebuffer::AttachTextureCube(_target, attachment, face, texture, level);
     }
     /// \param level Specifies the mipmap level of the texture object to attach (0 = base).
-    FramebufferWithTarget& AttachTexture2D(GLenum attachment, GLuint texture, GLint level) {
+    FramebufferWithTarget& AttachTexture2D(FramebufferAttachment::E attachment, GLuint texture, GLint level) {
         return (FramebufferWithTarget&)BaseFramebuffer::AttachTexture2D(_target, attachment, texture, level);
     }
     

@@ -86,7 +86,7 @@ int main()
     
     ArrayBuffer bv(vao);
     bv.SetData(sizeof(unitSquareVertPos), unitSquareVertPos);
-    vao.SetAttribPointer(prg.GetAttribute("a_vPos"), 3, AttribType::FLOAT);
+    bv.SetAttribPointer(prg.GetAttribute("a_vPos"), 3, AttribType::FLOAT);
     
     Texture2D tex;
     unsigned char texData[] = {
@@ -105,14 +105,14 @@ int main()
         // Renderbuffer for storing depth
         Renderbuffer rb;
         rb.SetStorage(InternalFormat::DEPTH_COMPONENT, s_fbSize.x, s_fbSize.y);
-        fb.AttachRenderbuffer(GL_DEPTH_ATTACHMENT, rb);
+        fb.AttachRenderbuffer(FramebufferAttachment::DEPTH_ATTACHMENT, rb);
     
         // Texture attachment for rendering color
         Texture2D rt;
         rt.SetEmptyImage(InternalFormat::RGBA8, s_fbSize.x, s_fbSize.y);
         rt.SetTextureUnit(TextureUnit(1));
         rt.SetFilter(MinFilterMode::NEAREST, MagFilterMode::NEAREST); // when set, mipmaps doesn't need to be generated
-        fb.AttachTexture2D(GL_COLOR_ATTACHMENT0, rt, 0);
+        fb.AttachTexture2D(FramebufferAttachment::COLOR_ATTACHMENT0, rt, 0);
     
     if (fb.CheckStatus() != FramebufferStatus::FRAMEBUFFER_COMPLETE) {
         std::cout << "Incomplete framebuffer" << std::endl;

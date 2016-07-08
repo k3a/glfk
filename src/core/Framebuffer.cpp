@@ -46,7 +46,7 @@ FramebufferStatus::E BaseFramebuffer::CheckStatus(GLenum target)
     return (FramebufferStatus::E)ret;
 }
 
-BaseFramebuffer& BaseFramebuffer::AttachRenderbuffer(GLenum target, GLenum attachment, GLuint renderbuffer)
+BaseFramebuffer& BaseFramebuffer::AttachRenderbuffer(GLenum target, FramebufferAttachment::E attachment, GLuint renderbuffer)
 {
     GLFK_AUTO_BIND(target);
     
@@ -56,7 +56,7 @@ BaseFramebuffer& BaseFramebuffer::AttachRenderbuffer(GLenum target, GLenum attac
     return *this;
 }
 
-BaseFramebuffer& BaseFramebuffer::AttachTexture1D(GLenum target, GLenum attachment, GLuint texture, GLint level)
+BaseFramebuffer& BaseFramebuffer::AttachTexture1D(GLenum target, FramebufferAttachment::E attachment, GLuint texture, GLint level)
 {
     GLFK_AUTO_BIND(target);
     
@@ -66,7 +66,7 @@ BaseFramebuffer& BaseFramebuffer::AttachTexture1D(GLenum target, GLenum attachme
     return *this;
 }
 
-BaseFramebuffer& BaseFramebuffer::AttachTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level)
+BaseFramebuffer& BaseFramebuffer::AttachTexture2D(GLenum target, FramebufferAttachment::E attachment, GLenum textarget, GLuint texture, GLint level)
 {
     GLFK_AUTO_BIND(target);
     
@@ -76,7 +76,7 @@ BaseFramebuffer& BaseFramebuffer::AttachTexture2D(GLenum target, GLenum attachme
     return *this;
 }
 
-BaseFramebuffer& BaseFramebuffer::AttachTexture3D(GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer)
+BaseFramebuffer& BaseFramebuffer::AttachTexture3D(GLenum target, FramebufferAttachment::E attachment, GLuint texture, GLint level, GLint layer)
 {
     GLFK_AUTO_BIND(target);
     

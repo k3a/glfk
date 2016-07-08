@@ -19,9 +19,6 @@ public:
 
     /// Enables the specified attribute array
     VertexArray& EnableAttribArray(GLuint index, bool enable=true);
-    /// Enable attribute array and set array pointer
-    VertexArray& SetAttribPointer(GLuint index, GLint size, AttribType::E type,
-                                  bool normalized = false, GLsizei stride = 0, const GLvoid * pointer = NULL);
     
     VertexArray& DrawElements(DrawMode::E mode, GLsizei count, IndicesType::E type, const GLvoid * indices = NULL);
     VertexArray& DrawArrays(DrawMode::E mode, GLint first, GLsizei count);

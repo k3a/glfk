@@ -9,12 +9,18 @@ class Window
     typedef void(*KeyCallback)(int key, int scancode, int action, int mods);
 
 public:
+    /// Create an instance
     Window();
+    /// Create a window with specified width, height and title
+    Window(unsigned width, unsigned height, const char* title);
+    
     ~Window();
 
     bool Create(unsigned width, unsigned height, const char* title);
-    void SwapBuffers();
-    void PollEvents();
+    bool Valid()const{ return _valid; };
+    Window& SwapBuffers();
+    Window& PollEvents();
+    Window& GetFramebufferSize(int& width, int& height);
     bool ShouldClose();
     
     static void EnableDebugLog(bool enable);
@@ -27,5 +33,6 @@ public:
 
 private:
     struct sPrivate;
-        sPrivate *_private;
+    sPrivate *_private;
+    bool _valid;
 };
