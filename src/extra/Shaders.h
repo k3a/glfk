@@ -2,6 +2,7 @@
 
 #include "core/Shader.h"
 
+/// Library of common vertex shaders
 class VertexShaders
 {
 public:
@@ -9,7 +10,8 @@ public:
     static VertexShader& NoTransform();
 };
 
-class PixelShaders
+/// Library of common fragment shaders
+class FragmentShaders
 {
 public:
     /// Output red pixel colors

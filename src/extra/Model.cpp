@@ -4,6 +4,7 @@ The GNU General Public License v3.0
 -*/
 
 #include "Model.h"
+#include "Shaders.h"
 
 #include <stdio.h>
 
@@ -102,23 +103,7 @@ CuboidModel::CuboidModel(float width, float height, float depth)
     SetIndexBuffer(ib, IndicesType::UNSIGNED_BYTE, sizeof(inds)/sizeof(inds[0]));
     
     // shader
-    VertexShader vs( GLSL150(
-        in vec3 a_vPos;
-
-        void main(){
-            gl_Position = vec4(a_vPos, 1.0);
-        }
-    ));
-    
-    FragmentShader fs( GLSL150(
-        out vec4 f_vColor;
-
-        void main() {
-            f_vColor = vec4(1.0, 0.0, 0.0, 1.0);
-        }
-    ));
-    
-    Program prg(vs, fs);
+    Program prg(VertexShaders::NoTransform(), FragmentShaders::RedColor());
     SetProgram(prg);
 }
 

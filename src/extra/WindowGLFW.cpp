@@ -29,7 +29,7 @@ void glad_post_cb(const char *name, void *funcptr, int len_args, ...) {
     }
     
     if (s_debugLogEnabled) {
-        
+    
         printf(".. %s(", name);
         
         va_start(vl, len_args);
@@ -64,7 +64,7 @@ struct Window::sPrivate {
     :	window(NULL),
         framebufferSizeCallback(NULL),
         keyCallback(NULL)
-        {};
+    {}
 
     GLFWwindow* window;
 
@@ -86,8 +86,9 @@ struct Window::sPrivate {
 Window::Window() 
 : _private(new sPrivate), _valid(false)
 {
-    if (!glfwInit())
+    if (!glfwInit()) {
         return;
+    }
 
     glfwSetErrorCallback(glfw_error_cb);
 }
@@ -95,8 +96,9 @@ Window::Window()
 Window::Window(unsigned width, unsigned height, const char* title)
 : _private(new sPrivate), _valid(false)
 {
-    if (!glfwInit())
+    if (!glfwInit()) {
         return;
+    }
     
     glfwSetErrorCallback(glfw_error_cb);
     
@@ -126,8 +128,7 @@ bool Window::Create(unsigned width, unsigned height, const char* title)
     //glfwWindowHint(GLFW_DEPTH_BITS, 16);
 
     _private->window = glfwCreateWindow(width, height, title, NULL, NULL);
-    if (!_private->window)
-    {
+    if (!_private->window) {
         printf("ERR: Unable to create GLFW Window. "
                 "Your system probably doesn't support OpenGL 3.2");
         return false;
