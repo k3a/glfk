@@ -10,14 +10,14 @@
     vs->SetSource(source); \
  \
 }
-
+/*
 VertexShader& VertexShaders::NoTransform()
 {
     STATIC_OBJ(VertexShader, vs);
-    vs->SetSource(<#std::string str#>);
+    //vs->SetSource(<#std::string str#>);
 }
 
 FragmentShader& FragmentShaders::RedColor()
 {
     
-}
+}*/

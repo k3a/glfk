@@ -169,7 +169,7 @@ Program& Program::Use()
     return *this;
 }
 
-Program& Program::Dispatch(GLuint num_groups_x, GLuint num_groups_y, GLuint num_groups_z)
+Program& Program::DispatchCompute(GLuint num_groups_x, GLuint num_groups_y, GLuint num_groups_z)
 {
     GLFK_AUTO_BIND();
     glDispatchCompute(num_groups_x, num_groups_y, num_groups_z);
