@@ -224,5 +224,14 @@ private:
 };
 
 #define GLSL(verStr, x) "#version " verStr "\n" #x
+// OpenGL > 3.2
 #define GLSL150(x) GLSL("150", x)
+#define GLSL330(x) GLSL("330", x)
+#define GLSL400(x) GLSL("400", x)
+#define GLSL410(x) GLSL("410", x)
+#define GLSL420(x) GLSL("420", x)
+#define GLSL430(x) GLSL("430", x)
+// OpenGL ES
+#define GLSL100(x) GLSL("100", x) //2.0
+#define GLSL300(x) GLSL("300", x) //3.0
 

@@ -14,13 +14,6 @@ The GNU General Public License v3.0
 #include "core/Framebuffer.h"
 #include "core/Renderbuffer.h"
 
-static float unitSquareVertPos[] = { 
-    -1, 1, 0, // top left
-    -1, -1, 0, // bottom left
-    1, -1, 0, // bottom right
-    1, 1, 0 // top right
-};
-
 static const char* vsSrc = GLSL150(
     uniform vec2 u_vScale;
                                    
@@ -85,6 +78,12 @@ int main()
     VertexArray vao;
     
     ArrayBuffer bv(vao);
+    float unitSquareVertPos[] = {
+        -1, 1, 0, // top left
+        -1, -1, 0, // bottom left
+        1, -1, 0, // bottom right
+        1, 1, 0 // top right
+    };
     bv.SetData(sizeof(unitSquareVertPos), unitSquareVertPos);
     bv.SetAttribPointer(prg.GetAttribute("a_vPos"), 3, AttribType::FLOAT);
     
