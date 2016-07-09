@@ -55,7 +55,7 @@ std::string BaseShader::GetInfoLog()const
     return outLog;
 }
 
-//-----------------------------------------------
+//----------------------------------------------------------------------------
 
 #ifdef GLFK_PREVENT_MULTIPLE_BIND
 GLuint Program::s_boundProgram = 0;
@@ -166,6 +166,14 @@ Program& Program::Use()
 #endif
     
     glUseProgram(*this);
+    return *this;
+}
+
+Program& Program::Dispatch(GLuint num_groups_x, GLuint num_groups_y, GLuint num_groups_z)
+{
+    GLFK_AUTO_BIND();
+    glDispatchCompute(num_groups_x, num_groups_y, num_groups_z);
+    GLFK_AUTO_UNBIND();
     return *this;
 }
 

@@ -56,6 +56,8 @@ public:
         return FragmentShader(ReadFile(path));
     }
 };
+/// Alias of FragmentShader
+typedef FragmentShader PixelShader;
 
 /// Program object of type GL_COMPUTE_SHADER
 class ComputeShader : public BaseShader
@@ -152,15 +154,20 @@ public:
     /// Validates the program can run in the current GL state. Possible errors returned by GetInfoLog().
     Program& Validate();
     
+    /// Return linking info log of the program
     std::string GetInfoLog()const;
     
     /// Returns true if the program has been linked successfuly and is ready to be used.
     bool IsValid()const{return _valid;};
 
+    /// Use the program
     Program& Use();
     
     /// Alias of Use
     Program& Bind(){ return Use(); };
+    
+    /// Launches one or more compute work groups 
+    Program& DispatchCompute(GLuint num_groups_x, GLuint num_groups_y, GLuint num_groups_z);
     
     /// Returns integer param of the program object
     GLint GetInt(GLenum pname)const;

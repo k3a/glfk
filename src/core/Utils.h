@@ -16,8 +16,13 @@ const char* GLErrorToString(unsigned error);
 /// Check for GL error and print it
 # define PrintGLError(where) PrintGLErrorImpl(where " (" __FILE__ ")")
 void PrintGLErrorImpl(const char* where);
-# include <signal.h>
-# define DebugBreak() raise(SIGSTOP)
+# ifdef WIN32
+#  include <intrin.h>
+#  define DebugBreak() __debugbreak()
+# else
+#  include <signal.h>
+#  define DebugBreak() raise(SIGSTOP)
+# endif
 #else
 # define PrintGLError(where)
 # define DebugBreak()

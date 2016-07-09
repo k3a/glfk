@@ -40,7 +40,11 @@ public:
     static void DrawArrays(DrawMode::E mode, GLint first, GLsizei count);
     static void Viewport(GLint x, GLint y, GLsizei width, GLsizei height);
     
+    /// Return value of GL integer state variable
     static GLint GetInt(GLenum pname);
+    /// Return value of indexed GL integer state variable
+    static GLint GetInt(GLenum pname, GLuint index);
+    /// Return value of GL string state variable
     static const char* GetString(GLenum pname);
     
     // helpers

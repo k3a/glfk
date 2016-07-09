@@ -17,7 +17,7 @@ echo:
 
 if not exist "build" mkdir build
 cd build
-"%CMAKE%" -G "Visual Studio 12 2013" ..
+"%CMAKE%" -G "Visual Studio 14 2015 Win64" ..
 
 echo Done
 echo:

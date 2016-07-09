@@ -36,6 +36,12 @@ GLint Renderer::GetInt(GLenum pname)
     return val;
 }
 
+GLint Renderer::GetInt(GLenum pname, GLuint index){
+    GLint val;
+    glGetIntegeri_v(pname, index, &val);
+    return val;
+}
+
 const char* Renderer::GetString(GLenum pname)
 {
     const char* val;
