@@ -16,6 +16,16 @@ Renderbuffer::Renderbuffer()
     AssignGLObject(obj, glDeleteRenderbuffers);
 }
 
+Renderbuffer::Renderbuffer(InternalFormat::E internalformat, GLsizei width, GLsizei height)
+{
+    GLuint obj;
+    glGenRenderbuffers(1, &obj);
+    
+    AssignGLObject(obj, glDeleteRenderbuffers);
+    
+    SetStorage(internalformat, width, height);
+}
+
 Renderbuffer& Renderbuffer::Bind()
 {
 #ifdef GLFK_PREVENT_MULTIPLE_BIND

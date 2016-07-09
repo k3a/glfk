@@ -19,6 +19,8 @@ public:
     BaseBuffer& Bind(GLenum target);
     static void BindNone(GLenum target);
     BaseBuffer& Unbind(GLenum target){ BindNone(target); return *this; };
+    
+    /// Set data to the buffer
     BaseBuffer& SetData(GLenum target, GLsizeiptr size, const GLvoid * data, BufferUsage::E usage = BufferUsage::STATIC_DRAW);
 
 private:
@@ -57,9 +59,9 @@ public:
     ArrayBuffer& EnableAttribArray(GLuint index, bool enable=true){ _vao.EnableAttribArray(index, enable); return *this; };
     
     /** Enable attribute array and set array pointer
-     \node Will also automatically call EnableAttribArray for the index. */
+    \node Will also automatically call EnableAttribArray for the index. */
     ArrayBuffer& SetAttribPointer(GLuint index, GLint size, AttribType::E type,
-                                  bool normalized = false, GLsizei stride = 0, const GLvoid * pointer = NULL);
+                                    bool normalized = false, GLsizei stride = 0, const GLvoid * pointer = NULL);
 };
 /// Alias for ArrayBuffer
 typedef ArrayBuffer VertexBuffer;

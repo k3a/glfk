@@ -16,11 +16,17 @@ class BaseShader : public GLObject
 public:
     BaseShader(GLenum shaderType);
     BaseShader(GLenum shaderType, std::string source);
-    void DeleteGLObject(GLuint obj);
 
+    /// Compiles the shader and returns the compile status
     bool Compile();
+    
+    /// Returns the shader info log
     std::string GetInfoLog()const;
+    
+    /// Sets the shader source code
     BaseShader& SetSource(std::string str);
+    
+    /// Returns true if the shader has been compiled successfuly and is ready to be linked in a program.
     bool IsValid()const{ return _valid; };
 
 private:
@@ -117,24 +123,61 @@ struct AttributeInfo {
 class Program : public GLObject
 {
 public:
+    /// Empty program object
     Program();
-
+    
+    /// Program object with supplied shader. Shader will be compiled if not compiled already.
+    Program(BaseShader& sh);
+    /// Program with supplied shaders. Shader will be compiled if not compiled already.
+    Program(BaseShader& sh1, BaseShader& sh2);
+    /// Program with supplied shaders. Shader will be compiled if not compiled already.
+    Program(BaseShader& sh1, BaseShader& sh2, BaseShader& sh3);
+    
+    /// Program object with supplied shader. Shader must be compiled manually before linking.
+    Program(const BaseShader& sh);
+    /// Program with supplied shaders. Shaders must be compiled manually before linking.
+    Program(const BaseShader& sh1, const BaseShader& sh2);
+    /// Program with supplied shaders. Shaders must be compiled manually before linking.
+    Program(const BaseShader& sh1, const BaseShader& sh2, const BaseShader& sh3);
+    
+    /// Attachs a shader object into the program. Shader will be compiled if not compiled already.
+    Program& AttachShader(BaseShader& sh);
+    
+    /// Attachs a shader object into the program. Shader must be compiled manually before linking.
     Program& AttachShader(const BaseShader& sh);
+    
     /// Links the attached shaders. Possible errors returned by GetInfoLog().
     bool Link();
+    
     /// Validates the program can run in the current GL state. Possible errors returned by GetInfoLog().
     Program& Validate();
+    
     std::string GetInfoLog()const;
+    
+    /// Returns true if the program has been linked successfuly and is ready to be used.
     bool IsValid()const{return _valid;};
+
     Program& Use();
+    
+    /// Alias of Use
     Program& Bind(){ return Use(); };
+    
+    /// Returns integer param of the program object
     GLint GetInt(GLenum pname)const;
     
+    /// Returns attribute for the specified name
     Attribute GetAttribute(const std::string& name);
+    
+    /// Returns attribute info
     AttributeInfo GetAttributeInfo(const Attribute& a);
     
+    /// Returns uniform for the specified name
     Uniform GetUniform(const std::string& name);
+    
+    /// Returns name of the uniform
     std::string GetUniformName(const Uniform& u);
+    
+    /// Returns uniform info
     UniformInfo GetUniformInfo(const Uniform& u);
     
     template <typename T>

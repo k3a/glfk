@@ -13,6 +13,7 @@ The GNU General Public License v3.0
 #include "core/Texture.h"
 #include "core/Framebuffer.h"
 #include "core/Renderbuffer.h"
+#include "extra/Model.h"
 
 static const char* vsSrc = GLSL150(
     uniform vec2 u_vScale;
@@ -65,12 +66,13 @@ int main()
     if (!vs.Compile()) {
         std::cout << "VS Error: " << vs.GetInfoLog() << std::endl;
     }
+    
     BaseShader fs = FragmentShader(fsSrc);
     if (!fs.Compile()) {
         std::cout << "FS Error: " << fs.GetInfoLog() << std::endl;
     }
-    Program prg;
-    prg.AttachShader(vs).AttachShader(fs);
+    
+    Program prg(vs, fs);
     if (!prg.Link()) {
         std::cout << "Prog Error: " << prg.GetInfoLog() << std::endl;
     }
@@ -87,14 +89,13 @@ int main()
     bv.SetData(sizeof(unitSquareVertPos), unitSquareVertPos);
     bv.SetAttribPointer(prg.GetAttribute("a_vPos"), 3, AttribType::FLOAT);
     
-    Texture2D tex;
+    Texture2D tex(TextureUnit(0));
     unsigned char texData[] = {
         255, 0, 0, 255,  0, 255, 0, 255,
         0, 0, 255, 255,  255, 255, 0, 255
     };
     tex.SetImage(0, InternalFormat::RGB, 2, 2, PixelDataFormat::RGBA, PixelDataType::UNSIGNED_BYTE, texData);
     tex.GenerateMipmap();
-    tex.SetTextureUnit(TextureUnit(0));
     prg.SetUniformTextureUnit("uTexture", tex.GetTextureUnit());
     
     // Framebuffer for offscreen rendering
@@ -102,14 +103,12 @@ int main()
     std::cout << "Max color attachments: " << fb.GetMaxColorAttachments() << std::endl;
     
         // Renderbuffer for storing depth
-        Renderbuffer rb;
-        rb.SetStorage(InternalFormat::DEPTH_COMPONENT, s_fbSize.x, s_fbSize.y);
+        Renderbuffer rb(InternalFormat::DEPTH_COMPONENT, s_fbSize.x, s_fbSize.y);
         fb.AttachRenderbuffer(FramebufferAttachment::DEPTH_ATTACHMENT, rb);
     
         // Texture attachment for rendering color
-        Texture2D rt;
+        Texture2D rt(TextureUnit(1));
         rt.SetEmptyImage(InternalFormat::RGBA8, s_fbSize.x, s_fbSize.y);
-        rt.SetTextureUnit(TextureUnit(1));
         rt.SetFilter(MinFilterMode::NEAREST, MagFilterMode::NEAREST); // when set, mipmaps doesn't need to be generated
         fb.AttachTexture2D(FramebufferAttachment::COLOR_ATTACHMENT0, rt, 0);
     
@@ -119,6 +118,8 @@ int main()
     
     R::ClearColor(0,1,1,0);
     float time = 0;
+    
+    CuboidModel model(0.5, 0.5, 0.5);
     
     while(!win.ShouldClose()) {
         time += 0.01;
@@ -150,6 +151,10 @@ int main()
         prg.SetUniformFloat("u_vColor", 0, 0, (1.0+sinf(4*time))/2.0);
         
         vao.DrawArrays(DrawMode::TRIANGLE_FAN, 0, 4);
+        
+        
+        //R::Clear();
+        //model.Draw();
         
         
         

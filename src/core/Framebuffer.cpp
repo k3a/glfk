@@ -99,7 +99,7 @@ BaseFramebuffer& BaseFramebuffer::Clear(GLenum target, GLbitfield mask)
 //------------------------------------------------------
 
 FramebufferWithTarget& FramebufferWithTarget::ReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, PixelCopyDataFormat::E format,
-                                  PixelDataType::E type, GLvoid * data)
+                                    PixelDataType::E type, GLvoid * data)
 {
     GLFK_AUTO_BIND();
     

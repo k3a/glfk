@@ -66,6 +66,57 @@ Program::Program()
 {
     AssignGLObject(glCreateProgram(), glDeleteProgram);
 }
+Program::Program(BaseShader& sh)
+: _valid(false)
+{
+    AssignGLObject(glCreateProgram(), glDeleteProgram);
+    AttachShader(sh);
+}
+Program::Program(BaseShader& sh1, BaseShader& sh2)
+: _valid(false)
+{
+    AssignGLObject(glCreateProgram(), glDeleteProgram);
+    AttachShader(sh1);
+    AttachShader(sh2);
+}
+Program::Program(BaseShader& sh1, BaseShader& sh2, BaseShader& sh3)
+: _valid(false)
+{
+    AssignGLObject(glCreateProgram(), glDeleteProgram);
+    AttachShader(sh1);
+    AttachShader(sh2);
+    AttachShader(sh3);
+}
+Program::Program(const BaseShader& sh)
+: _valid(false)
+{
+    AssignGLObject(glCreateProgram(), glDeleteProgram);
+    AttachShader(sh);
+}
+Program::Program(const BaseShader& sh1, const BaseShader& sh2)
+: _valid(false)
+{
+    AssignGLObject(glCreateProgram(), glDeleteProgram);
+    AttachShader(sh1);
+    AttachShader(sh2);
+}
+Program::Program(const BaseShader& sh1, const BaseShader& sh2, const BaseShader& sh3)
+: _valid(false)
+{
+    AssignGLObject(glCreateProgram(), glDeleteProgram);
+    AttachShader(sh1);
+    AttachShader(sh2);
+    AttachShader(sh3);
+}
+
+Program& Program::AttachShader(BaseShader& sh)
+{
+    if (!sh.IsValid())
+        sh.Compile();
+    
+    glAttachShader(*this, sh);
+    return *this;
+}
 
 Program& Program::AttachShader(const BaseShader& sh)
 {

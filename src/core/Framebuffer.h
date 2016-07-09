@@ -76,7 +76,7 @@ public:
     
     /// Read data from framebuffer
     FramebufferWithTarget& ReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, PixelCopyDataFormat::E format,
-                                      PixelDataType::E type, GLvoid * data);
+                                        PixelDataType::E type, GLvoid * data);
     
     // helpers
     FramebufferWithTarget& Clear(GLbitfield mask = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT){

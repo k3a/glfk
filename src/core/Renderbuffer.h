@@ -12,11 +12,13 @@ class Renderbuffer : public GLObject
 public:
     
     Renderbuffer();
+    Renderbuffer(InternalFormat::E internalformat, GLsizei width, GLsizei height);
 
     Renderbuffer& Bind();
     static void BindNone();
     Renderbuffer& Unbind(){ BindNone(); return *this; };
     
+    /// Set storage for the renderbuffer
     Renderbuffer& SetStorage(InternalFormat::E internalformat, GLsizei width, GLsizei height);
 
 private:
