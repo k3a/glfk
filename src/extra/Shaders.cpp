@@ -20,10 +20,10 @@
 VertexShader& VertexShaders::NoTransform()
 {
     STATIC_SHADER(VertexShader, GLSL150(
-        in vec3 a_vPos;
+        in vec3 a_vPosition;
         
         void main(){
-            gl_Position = vec4(a_vPos, 1.0);
+            gl_Position = vec4(a_vPosition, 1.0);
         }
     ));
 }

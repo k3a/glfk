@@ -55,13 +55,20 @@ class ArrayBuffer : public Buffer
 public:    
     ArrayBuffer(VertexArray vao) : Buffer(vao, GL_ARRAY_BUFFER) {};
     
-    /// Enables the specified attribute array
+    /// Enables or disables the specified attribute array index
     ArrayBuffer& EnableAttribArray(GLuint index, bool enable=true){ _vao.EnableAttribArray(index, enable); return *this; };
     
     /** Enable attribute array and set array pointer
-    \node Will also automatically call EnableAttribArray for the index. */
+    \note Will also automatically call EnableAttribArray for the index.
+    \param normalizeFixedPoint When true, integer format will be mapped to the range [-1,1] (for signed values) or [0,1] 
+    (for unsigned values) when they are accessed and converted to floating point. Otherwise, values will be
+    converted to floats directly without normalization */
     ArrayBuffer& SetAttribPointer(GLuint index, GLint size, AttribType::E type,
-                                    bool normalized = false, GLsizei stride = 0, const GLvoid * pointer = NULL);
+                                    bool normalizeFixedPoint = false, GLsizei stride = 0, const GLvoid * pointer = NULL);
+    
+    // helpers
+    
+    static unsigned GetMaxVertexAttributes(){ return Renderer::GetInt(GL_MAX_VERTEX_ATTRIBS); };
 };
 /// Alias for ArrayBuffer
 typedef ArrayBuffer VertexBuffer;

@@ -76,7 +76,10 @@ public:
     BaseTexture& GenerateMipmap(GLenum target);
     
     // helpers
+    /// Returns the maximum texture size
     static unsigned GetMaxTextureSize(){ return Renderer::GetInt(GL_MAX_TEXTURE_SIZE); };
+    /// Sets the texture pixel data row alignment. GLFK default 1 (OpenGL default 4).
+    static void SetUnpackAlignment(unsigned align){ glPixelStorei(GL_UNPACK_ALIGNMENT, align); };
     
 private:
 #ifdef GLFK_PREVENT_MULTIPLE_BIND

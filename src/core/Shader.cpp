@@ -169,11 +169,36 @@ Program& Program::Use()
     return *this;
 }
 
+void Program::SetDrawBuffers(unsigned numArgs, DrawBufferType::E type, ...)
+{
+    typedef std::vector<GLenum> DrawBuffersArray;
+    DrawBuffersArray drawBuffers;
+    va_list vl;
+    
+    drawBuffers.clear();
+    drawBuffers.push_back(type);
+    
+    va_start(vl, type);
+    for (int i=1; i<numArgs; i++) {
+        DrawBufferType::E arg = (DrawBufferType::E)va_arg(vl, GLuint);
+        drawBuffers.push_back(arg);
+    }
+    va_end(vl);
+    
+    glDrawBuffers(drawBuffers.size(), &drawBuffers[0]);
+}
+
 Program& Program::DispatchCompute(GLuint num_groups_x, GLuint num_groups_y, GLuint num_groups_z)
 {
     GLFK_AUTO_BIND();
     glDispatchCompute(num_groups_x, num_groups_y, num_groups_z);
     GLFK_AUTO_UNBIND();
+    return *this;
+}
+
+Program& Program::BindAttribLocation(GLuint attribIndex, const GLchar *name)
+{
+    glBindAttribLocation(*this, attribIndex, name);
     return *this;
 }
 
@@ -301,17 +326,17 @@ Program& Program::SetUniformFloat(const Uniform& uniform, const float* values, u
 #ifdef GLFK_HAS_GLM
 Program& Program::SetUniform(const Uniform& uniform, const glm::vec2& value)
 {
-    return SetUniformFloat(value.x, value.y);
+    return SetUniformFloat(uniform, value.x, value.y);
 }
 
 Program& Program::SetUniform(const Uniform& uniform, const glm::vec3& value)
 {
-    return SetUniformFloat(value.x, value.y, value.z);
+    return SetUniformFloat(uniform, value.x, value.y, value.z);
 }
 
 Program& Program::SetUniform(const Uniform& uniform, const glm::vec4& value)
 {
-    return SetUniformFloat(value.x, value.y, value.z, value.w);
+    return SetUniformFloat(uniform, value.x, value.y, value.z, value.w);
 }
 
 Program& Program::SetUniform(const Uniform& uniform, const glm::vec2* values, unsigned count)

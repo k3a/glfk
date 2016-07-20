@@ -12,11 +12,15 @@ public:
     /// Create an instance
     Window();
     /// Create a window with specified width, height and title
-    Window(unsigned width, unsigned height, const char* title);
+    Window(unsigned width, unsigned height, const char* title, bool srgb= true);
     
     ~Window();
 
-    bool Create(unsigned width, unsigned height, const char* title);
+    /** Creates a GL context and window.
+     \param srgb If true, creates a sRGB framebuffer and automatically does the conversion 
+     from linear colors to sRGB when writing to the framebuffer.
+     */
+    bool Create(unsigned width, unsigned height, const char* title, bool srgb = true);
     bool Valid()const{ return _valid; };
     Window& SwapBuffers();
     Window& PollEvents();
@@ -29,7 +33,7 @@ public:
     Window::KeyCallback SetKeyCallback(KeyCallback cb);
     
     // helpers
-    Window& EndFrame(){ SwapBuffers(); PollEvents(); return *this; };
+    bool EndFrame(){ SwapBuffers(); PollEvents(); return ShouldClose(); };
 
 private:
     struct sPrivate;

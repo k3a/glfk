@@ -6,7 +6,9 @@ The GNU General Public License v3.0
 
 #include "Renderer.h"
 #include "Utils.h"
+
 #include <string>
+#include <vector>
 
 /// Class encapsulating Shader Object
 class BaseShader : public GLObject
@@ -43,6 +45,9 @@ public:
     static VertexShader FromFile(const char* path){
         return VertexShader(ReadFile(path));
     }
+    
+    // helpers 
+    static unsigned GetMaxVertexAttributes(){ return Renderer::GetInt(GL_MAX_VERTEX_ATTRIBS); };
 };
 
 /// Program object of type GL_FRAGMENT_SHADER
@@ -169,10 +174,13 @@ public:
     /// Launches one or more compute work groups 
     Program& DispatchCompute(GLuint num_groups_x, GLuint num_groups_y, GLuint num_groups_z);
     
+    /// Associates a user-defined attribute variable with a generic vertex attribute index. Link() is necessary for it to go into effect.
+    Program& BindAttribLocation(GLuint attribIndex, const GLchar *name);
+    
     /// Returns integer param of the program object
     GLint GetInt(GLenum pname)const;
     
-    /// Returns attribute for the specified name
+    /// Returns attribute location for the specified name. Also see BindAttribLocation().
     Attribute GetAttribute(const std::string& name);
     
     /// Returns attribute info
@@ -264,6 +272,10 @@ public:
     // helpers
     unsigned GetNumActiveAttributes()const{ return GetInt(GL_ACTIVE_ATTRIBUTES); };
     unsigned GetNumActiveUniforms()const{ return GetInt(GL_ACTIVE_UNIFORMS); };
+    
+    /// Define an array of buffers into which outputs from the fragment shader data will be written.
+    /// Uses glDrawBuffers() and setting persists until you change it.
+    static void SetDrawBuffers(unsigned num, DrawBufferType::E type, ...);
     
 private:
 #ifdef GLFK_PREVENT_MULTIPLE_BIND

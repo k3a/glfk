@@ -119,9 +119,8 @@ int main()
     R::ClearColor(0,1,1,0);
     float time = 0;
     
-    CuboidModel model(0.5, 0.5, 0.5);
-    
-    while(!win.ShouldClose()) {
+    do {
+        
         time += 0.01;
         
         // draw to the framebuffer
@@ -151,15 +150,8 @@ int main()
         prg.SetUniformFloat("u_vColor", 0, 0, (1.0+sinf(4*time))/2.0);
         
         vao.DrawArrays(DrawMode::TRIANGLE_FAN, 0, 4);
-        
-        
-        //R::Clear();
-        //model.Draw();
-        
-        
-        
-        win.EndFrame();
-    }
+
+    } while (!win.EndFrame());
 
     return 0;
 }

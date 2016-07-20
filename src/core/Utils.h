@@ -39,3 +39,4 @@ private:
     NoCopy(const NoCopy& other);
 };
 
+#define GLFK_PACKED __attribute__((packed))

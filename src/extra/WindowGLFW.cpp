@@ -93,7 +93,7 @@ Window::Window()
     glfwSetErrorCallback(glfw_error_cb);
 }
 
-Window::Window(unsigned width, unsigned height, const char* title)
+Window::Window(unsigned width, unsigned height, const char* title, bool srgb)
 : _private(new sPrivate), _valid(false)
 {
     if (!glfwInit()) {
@@ -102,7 +102,7 @@ Window::Window(unsigned width, unsigned height, const char* title)
     
     glfwSetErrorCallback(glfw_error_cb);
     
-    Create(width, height, title);
+    Create(width, height, title, srgb);
 }
 
 Window::~Window() 
@@ -112,7 +112,7 @@ Window::~Window()
     delete _private;
 }
 
-bool Window::Create(unsigned width, unsigned height, const char* title) 
+bool Window::Create(unsigned width, unsigned height, const char* title, bool srgb)
 {
 #ifdef DEBUG
     printf("DEBUG enabled\n");
@@ -125,6 +125,9 @@ bool Window::Create(unsigned width, unsigned height, const char* title)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 #endif
+    if (srgb) {
+        glfwWindowHint(GLFW_SRGB_CAPABLE, GLFW_TRUE);
+    }
     //glfwWindowHint(GLFW_DEPTH_BITS, 16);
 
     _private->window = glfwCreateWindow(width, height, title, NULL, NULL);
@@ -162,7 +165,15 @@ bool Window::Create(unsigned width, unsigned height, const char* title)
     // set post-call GLAD callback
     glad_set_post_callback(glad_post_cb);
 #endif
+    
+    // set default texture unpack alignment to 1
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
+    if (srgb) {
+        // allow automatic sRGB conversion for framebuffer writes
+        glEnable(GL_FRAMEBUFFER_SRGB);
+    }
+    
     _valid = true;
     return true;
 }
