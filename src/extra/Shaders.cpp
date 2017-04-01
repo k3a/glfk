@@ -1,3 +1,7 @@
+/*-
+Minimalistic and Modular OpenGL C++ Framework
+GLFK LICENSE (BSD-based) - please see LICENSE.md
+-*/
 
 #include "Shaders.h"
 #include <stdio.h>

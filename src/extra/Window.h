@@ -1,6 +1,6 @@
 /*-
 Minimalistic and Modular OpenGL C++ Framework
-The GNU General Public License v3.0
+GLFK LICENSE (BSD-based) - please see LICENSE.md
 -*/
 
 class Window
@@ -17,9 +17,9 @@ public:
     ~Window();
 
     /** Creates a GL context and window.
-     \param srgb If true, creates a sRGB framebuffer and automatically does the conversion 
-     from linear colors to sRGB when writing to the framebuffer.
-     */
+    \param srgb If true, creates a sRGB framebuffer and automatically does the conversion 
+    from linear colors to sRGB when writing to the framebuffer.
+    */
     bool Create(unsigned width, unsigned height, const char* title, bool srgb = true);
     bool Valid()const{ return _valid; };
     Window& SwapBuffers();

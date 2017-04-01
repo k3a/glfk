@@ -1,6 +1,6 @@
 /*-
 Minimalistic and Modular OpenGL C++ Framework
-The GNU General Public License v3.0
+GLFK LICENSE (BSD-based) - please see LICENSE.md
 -*/
 #include "Renderer.h"
 #include "Utils.h"

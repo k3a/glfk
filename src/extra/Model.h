@@ -1,6 +1,6 @@
 /*-
 Minimalistic and Modular OpenGL C++ Framework
-The GNU General Public License v3.0
+GLFK LICENSE (BSD-based) - please see LICENSE.md
 -*/
 #pragma once
 
@@ -54,7 +54,7 @@ public:
         glm::vec4 color;
         
         ComplexVertex(const glm::vec3& position, const glm::vec3& normal, const glm::vec3& tangent,
-               const glm::vec3& bitangent, const glm::vec2& texcoord, const glm::vec4& color);
+                const glm::vec3& bitangent, const glm::vec2& texcoord, const glm::vec4& color);
     };
     typedef std::vector<ComplexVertex> ComplexVertexArray;
     

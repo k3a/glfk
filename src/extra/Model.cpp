@@ -1,6 +1,6 @@
 /*-
 Minimalistic and Modular OpenGL C++ Framework
-The GNU General Public License v3.0
+GLFK LICENSE (BSD-based) - please see LICENSE.md
 -*/
 
 #include "Model.h"
@@ -69,7 +69,7 @@ Model::BasicVertex::BasicVertex(const glm::vec3& position, const glm::vec3& norm
 }
 
 Model::ComplexVertex::ComplexVertex(const glm::vec3& position, const glm::vec3& normal, const glm::vec3& tangent,
-                      const glm::vec3& bitangent, const glm::vec2& texcoord, const glm::vec4& color)
+                        const glm::vec3& bitangent, const glm::vec2& texcoord, const glm::vec4& color)
 : position(position), normal(normal), tangent(tangent), bitangent(bitangent), texcoord(texcoord), color(color)
 {
 }
@@ -134,13 +134,13 @@ PlaneModel::PlaneModel(float width, float height)
 BoxModel::BoxModel(float width, float height, float depth)
 {
     /*
-     7_____6
-     /    /|
-     3---2 |
-     | 4 | 5
-     0---1/
+    7_____6
+    /    /|
+    3---2 |
+    | 4 | 5
+    0---1/
      
-     */
+    */
     
     glm::vec3 verts[8];
     
