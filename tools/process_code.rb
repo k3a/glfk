@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+# What it does:
+# - adds/updates license header
+# - changes TABs to spaces
+
 ProjectDir = File.dirname(__FILE__)+"/.."
 FileHeader = %{/*-
 Minimalistic and Modular OpenGL C++ Framework
