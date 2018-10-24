@@ -4,6 +4,7 @@ GLFK LICENSE (BSD-based) - please see LICENSE.md
 -*/
 #include "Shader.h"
 #include <stdlib.h>
+#include <stdarg.h>
 
 #ifdef GLFK_HAS_GLM
 # include <glm/gtc/type_ptr.hpp>

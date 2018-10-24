@@ -5,6 +5,7 @@ GLFK LICENSE (BSD-based) - please see LICENSE.md
 #include "extra/Window.h"
 
 #include <stdio.h>
+#include <string.h>
 #include <glad.h>
 
 #define GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED // GLAD simulates gl.h
